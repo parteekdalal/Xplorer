@@ -1,0 +1,60 @@
+/* Utility classes */
+.txt {
+    color: var(--text-primary);
+}
+.txt-accent {
+    color: var(--primary);
+}
+.txt-accent-muted {
+    color: var(--primary-light);
+}
+.input {
+    height: 40px;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-light);
+    padding: 0 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+}
+.btn-mini {
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 5px;
+    border-radius: 50%;
+}
+.btn-accent {
+    background-color: var(--primary);
+}
+.btn-main {
+    background-color: var(--primary-light);
+}
+.btn-icon {
+    font-size: large;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+
+
+    color: var(--text-primary);
+    background-color: var(--base);
+    transition: all 0.3s ease;
+}
+.container {
+    width: 80vw;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.btn-icon:hover {
+    scale: 1.05;
+    color: white;
+    background-color: var(--primary);
+}
+.btn-main { background-color: var(--primary); color: white; }

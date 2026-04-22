@@ -1,0 +1,13 @@
+/* Import all stylesheets in correct order */
+@import './variable.css';
+@import './globals.css';
+@import './utilities.css';
+@import './animations.css';
+
+/* Component styles */
+@import './components/header.css';
+@import './components/chat.css';
+@import './components/auth.css';
+
+/* Page styles */
+@import './components/home.css';

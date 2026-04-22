@@ -1,0 +1,26 @@
+/* Loading animation */
+.loading-container {
+    height: 30px;
+    width: 30px;
+    position: relative;
+}
+.spinner {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    position: absolute;
+}
+.spinner1 {
+    border-bottom: 3px solid var(--primary);
+    animation: spin 1s linear infinite;
+}
+.spinner2 {
+    border-top: 3px solid var(--primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
