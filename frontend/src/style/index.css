@@ -7,7 +7,8 @@
 /* Component styles */
 @import './components/header.css';
 @import './components/chat.css';
-@import './components/auth.css';
+@import './components/popup.css';
 
 /* Page styles */
-@import './components/home.css';
+@import './pages/home.css';
+@import './pages/auth.css';

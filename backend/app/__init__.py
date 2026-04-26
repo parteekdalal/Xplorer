@@ -7,13 +7,15 @@ from app.core.logger import logger
 from app.core.middleware import log_requests
 from app.routers import all_routers
 from app.database.redis import init_redis, close_redis
-from app.database import init_db
+from app.database import init_db, Base, engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("app started.")
-    await init_redis()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     await init_db()
+    await init_redis()
     yield
     await close_redis()
 

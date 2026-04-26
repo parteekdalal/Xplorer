@@ -57,6 +57,14 @@ def getWaitlistUser(uid: int) -> dict:
         'languages': ulangs
     }
 
+async def createRoom(room_id: str, users: str = ""):
+    redis = getRedis()
+    redis.hset(
+        name="rooms",
+        key=room_id,
+        value=users   
+    )    
+
 async def filterWaitlist(genders: list[str] = None, interests: list[str] = None, languages: list[str] = None):
     """
     - filter the entries of the waitlist based on gender, interests, languages.

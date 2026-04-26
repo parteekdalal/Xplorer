@@ -23,18 +23,18 @@
     --gray-800: hsl(0, 0%, 15%);
     --gray-900: hsl(0, 0%, 5%);          /* Very dark */
 
-    /* Background Colors */
     --bg-primary: var(--gray-50);
     --bg-secondary: var(--gray-100);
     --bg-tertiary: var(--gray-200);
+    --bgt-primary: hsla(0, 0%, 90%, 0.5);
+    --bgt-secondary: hsla(0, 0%, 70%, 0.5);
+    --bgt-tertiary: hsla(0, 0%, 60%, 0.5);
 
-    /* Text Colors */
     --text-primary: var(--gray-900);
     --text-secondary: var(--gray-600);
     --text-tertiary: var(--gray-500);
     --text-inverse: var(--gray-50);
 
-    /* Borders */
     --border-light: 2px solid var(--gray-200);
     --border-medium: 2px solid var(--gray-300);
     --border-dark: 2px solid var(--gray-400);
@@ -44,12 +44,10 @@
     --active-bg: var(--gray-200);
     --focus-ring: hsla(45, 86%, 58%, 0.5);
 
-    /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.05);
     --shadow-md: 0 4px 6px -1px hsla(0, 0%, 0%, 0.1), 0 2px 4px -1px hsla(0, 0%, 0%, 0.06);
     --shadow-lg: 0 10px 15px -3px hsla(0, 0%, 0%, 0.1), 0 4px 6px -2px hsla(0, 0%, 0%, 0.05);
 
-    /* Spacing & Layout */
     --border-radius: 15px;
     --border-radius-sm: 10px;
     --border-radius-lg: 20px;
@@ -70,7 +68,6 @@
         --error: hsl(0, 84%, 65%);
         --info: hsl(199, 89%, 55%);
 
-        /* Dark Neutral Colors */
         --gray-50: hsl(0, 0%, 5%);
         --gray-100: hsl(0, 0%, 15%);
         --gray-200: hsl(0, 0%, 20%);
@@ -82,28 +79,24 @@
         --gray-800: hsl(0, 0%, 85%);
         --gray-900: hsl(0, 0%, 95%);
 
-        /* Dark Background Colors */
-        --bg-primary: var(--gray-900);
-        --bg-secondary: var(--gray-800);
-        --bg-tertiary: var(--gray-700);
+        --bgt-primary: hsla(0, 0%, 0%, 0.5);
+        --bgt-secondary: hsla(0, 0%, 5%, 0.5);
+        --bgt-tertiary: hsla(0, 0%, 10%, 0.5);
 
-        /* Dark Text Colors */
         --text-primary: var(--gray-50);
         --text-secondary: var(--gray-300);
         --text-tertiary: var(--gray-400);
         --text-inverse: var(--gray-900);
 
-        /* Dark Border Colors */
-        --border-light: var(--gray-700);
-        --border-medium: var(--gray-600);
-        --border-dark: var(--gray-500);
+        --border-light: 2px solid var(--gray-700);
+        --border-medium: 2px solid var(--gray-600);
+        --border-dark: 2px solid var(--gray-500);
 
         /* Dark Interactive States */
         --hover-bg: var(--gray-800);
         --active-bg: var(--gray-700);
         --focus-ring: hsla(45, 86%, 62%, 0.5);
 
-        /* Dark Shadows */
         --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.3);
         --shadow-md: 0 4px 6px -1px hsla(0, 0%, 0%, 0.4), 0 2px 4px -1px hsla(0, 0%, 0%, 0.3);
         --shadow-lg: 0 10px 15px -3px hsla(0, 0%, 0%, 0.5), 0 4px 6px -2px hsla(0, 0%, 0%, 0.4);

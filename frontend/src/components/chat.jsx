@@ -4,7 +4,7 @@ import useWebSocket from '../hooks/websocket';
 
 export default function ChatUI({ roomId, prev}) {
     const [userId] = useState(`user_${Math.random().toString(36).substr(2, 9)}`);
-    const { messages, send } = useWebSocket(`ws://localhost:8001/chat/${roomId}/${userId}`);
+    const { messages, send } = useWebSocket(`ws://api/chat/${roomId}/${userId}`);
     const [messageContent, setInputMessage] = useState({ io: 'msg-out', message: ''});
 
     const handleSendMessage = () => {
@@ -79,14 +79,27 @@ function ChatInput({ value, onChange, onSend, onKeyPress }) {
     return (
         <div className="chat-input-container">
             <button className="btn btn-icon"><IoMdAttach/></button>
-            <input
+            {/* <input
                 type="text"
                 className="msg-input input"
                 value={value}
                 onChange={(e) => onChange(prev => ({ ...prev, message: e.target.value }))}
                 onKeyPress={onKeyPress}
                 placeholder="Type a message..."
+            /> */}
+            <textarea
+                className="msg-input input"
+                value={value}
+                onChange={(e) => {
+                    onChange(prev => ({ ...prev, message: e.target.value }))
+                    e.target.style.height = "auto"
+                    e.target.style.height = e.target.scrollHeight + "px"
+                }}
+                onKeyPress={onKeyPress}
+                placeholder="Type a message..."
+                rows={1}
             />
+
             <button className="btn btn-primary" onClick={onSend}>
                 <IoMdSend/>
             </button>

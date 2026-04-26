@@ -1,7 +1,7 @@
 /* Chat UI styles */
 .chat-ui {
-    height: 100vh;
     width: min(90vw, 900px);
+    min-height: 100vh;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -15,12 +15,13 @@
     padding: 5px 10px;
     position: sticky;
 
-    background-color: var(--bg-secondary);
+    background-color: var(--bgt-primary);
+    backdrop-filter: blur(10px);
     border: var(--border-light);
     border-radius: var(--border-radius-lg);
 }
 .chat-header {
-    top: 0;
+    top: 10px;
     grid-area: header;
     display : grid;
     grid-template-columns: 50px 50px 1fr 50px;
@@ -32,30 +33,33 @@
 .chat-header #prev-btn {
     grid-area: prev;
     font-size: larger;
+    background-color: var(--bgt-tertiary);
 }
 .pfp {
+    grid-area: pfp;
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    grid-area: pfp;
 }
 .chat-details {
     grid-area: status;
     display: flex;
     align-items: center;
     gap: 5px;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 .chat-options {
     grid-area: options;
     display: flex;
     align-items: center;
-    color: var(--text-tertiary);
 }
+.chat-options .btn { background-color: transparent; }
 
 .chat-messages {
     flex: 1;
     width: min(88vw, 800px);
+    height: auth;
+
     grid-area: messages;
     display: flex;
     flex-direction: column;
@@ -70,7 +74,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    bottom: 0;
+    bottom: 10px;
+    resize: none;
+    overflow-y: hidden;
+    max-height: 20vh;
+    line-height: 5vh;
 }
 
 .msg {
@@ -98,11 +106,13 @@
 }
 .msg-input {
     flex: 1;
-    height: 35px;
-    border: var(--border-medium);
+    min-height: 35px;
+    max-height: 18vh;
+    font-size: 1rem;
+
+    border: var(--border-light);
     border-radius: var(--border-radius);
-    padding: 5px 10px;
-    background-color: var(--bg-primary);
+    background-color: inherit;
     color: var(--text-primary);
     transition: all 0.3s ease;
 }

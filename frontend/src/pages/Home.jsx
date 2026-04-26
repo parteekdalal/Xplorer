@@ -11,9 +11,16 @@ export default function Home() {
 
     const handleXplore = () => {
         // Generate a random room ID for now
-        const roomId = `r:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
-        setCurrentRoom(roomId);
-        setCurrentView('chat');
+    //     try {
+    //         const response = await fetch("/api/discover", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify(discoverReq)
+    //         });
+    //     setCurrentRoom();
+    //     setCurrentView('chat');
     };
 
     const handleBackToXplore = () => {

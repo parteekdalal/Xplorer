@@ -1,0 +1,5 @@
+/* Auth dialog styles */
+#auth-page .input {
+    background-color: var(--bgt-primary);
+    color: var(--text-inverse);
+}

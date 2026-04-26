@@ -1,0 +1,56 @@
+.popup {
+    min-width: 300px;
+    min-height: 200px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 20px;
+    transform: translate(-50%, -50%);
+    background-color: var(--bgt-secondary);
+    backdrop-filter: blur(5px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-medium);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.popup-header .icon {
+    font-size: 30px;
+}
+.popup-body {
+    flex: 1;
+    display: flex;
+}
+.popup-body p {
+    padding: 10px 0;
+    flex: 1;
+}
+.popup-options {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+/* Success Popup Styles */
+.success {
+    border: 2px solid var(--success);
+}
+.success .popup-header {
+    color: var(--success);
+}
+.success p {
+    border-top: 1px solid var(--success);
+    border-bottom: 1px solid var(--success);
+}
+.success .btn {
+    background-color: var(--success);
+}
