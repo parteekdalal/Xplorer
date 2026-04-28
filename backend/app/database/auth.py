@@ -1,19 +1,64 @@
-from datetime import datetime
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+from sqlalchemy import select
+from datetime import datetime, timedelta, timezone
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+
 from app.models.users import User
 from app.database import AsyncSessionLocal
+from app.core.config import settings
+from app.core.logger import logger
 
-def authLogin(key: str, password: str):
+
+# ── Password Utils ──────────────────────────────────────────
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
+
+# ── Token utils ──────────────────────────────────────────
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+def verify_token(token: str):
     try:
-        with AsyncSessionLocal() as s:
-            stmt = s.query(User).where(User.username == key)
-            user = s.execute(stmt).scalars().first()
+        logger.info("verifying token")
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    except JWTError:
+        return None
+
+# ── Auth dependency ──────────────────────────────────────
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return payload
+
+# ── Fixed authLogin ──────────────────────────────────────
+async def authLogin(key: str, password: str):
+    try:
+        async with AsyncSessionLocal() as session:
+            logger.info(f"attempting login for user: {key}")
+            stmt = select(User).where(User.username == key)
+            user = await session.execute(stmt)
+            user = user.scalars().first()
             if not user:
+                logger.warning(f"login failed: user {key} not found")
                 return {
                     "status": False,
-                    "status_code": 401,
-                    "message": "wrong credentials"
+                    "status_code": 404,
+                    "message": "user not found"
                 }
-            elif user.password != password:
+            elif not verify_password(password, user.password):
+                logger.warning(f"login failed: incorrect password for user {key}")
                 return {
                     "status": False,
                     "status_code": 401,
@@ -22,57 +67,27 @@ def authLogin(key: str, password: str):
             return {
                 "status": True,
                 "status_code": 200,
-                "data": {
-                    "username": user.username,
-                    "email": user.email,
-                    "display_name": user.display_name,
-                    "bio": user.bio,
-                    "age": datetime.now().year - user.birth_year,
-                    "gender": user.gender,
-                    "interests": user.interests.split(),
-                    "languages": user.languages.split()
-                }
+                "message": f"welcome back, {user.display_name}",
+                "uid": user.id
             }
     except Exception as e:
+        logger.error(f"error occurred while logging in: {e}")
         return {
             "status": False,
             "status_code": 404,
             "message": f"{e}"
         }
 
-def authSignup(username: str, email: str, password: str, birth_year: int, gender: str, display_name: str = None, bio: str = "", interests: list[str] = None, languages: list[str] = None):
-    new_user = User(
-        username=      username,
-        email=         email,
-        password=      password,
-        display_name=  display_name if display_name else "",
-        bio=           bio if bio else "no bio",
-        birth_year=    birth_year,
-        gender=        gender,
-
-        interests =    " ".join(interests) if interests else "",
-        languages=     " ".join(languages) if languages else ""
-    )
+async def authSignup(user_info: User):
     try:
-        with AsyncSessionLocal() as s:
-            s.add(new_user)
-            s.commit()
-            return {
-                "status": True,
-                "status_code": 200,
-                "message": "welcome to wanderhead",
-                "data": [
-                    new_user.username,
-                    new_user.email,
-                    new_user.display_name,
-                    new_user.bio,
-                    new_user.birth_year,
-                    new_user.gender,
-                    new_user.interests.split(),
-                    new_user.languages.split()
-                ]
-            }
+        async with AsyncSessionLocal() as session:
+            logger.info(f"attempting signup for user: {user_info.username}")
+            user_info.password = hash_password(user_info.password)
+            session.add(user_info)
+            await session.commit()
+            return { "status": True }
     except Exception as e:
+        logger.error(f"error occurred while signing up user {user_info.username}: {e}")
         return {
             "status": False,
             "status_code": 400,

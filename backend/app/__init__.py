@@ -1,24 +1,32 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from contextlib import asynccontextmanager
-from redis import Redis
-import httpx
 
-# from app.database import SessionLocal  # Initialize database and create tables
+from app.core.logger import logger
+from app.core.middleware import log_requests
 from app.routers import all_routers
 from app.database.redis import init_redis, close_redis
+from app.database import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_redis()       # startup
+    logger.info("app started.")
+    await init_redis()
+    await init_db()
     yield
-    await close_redis()      # shutdown
+    await close_redis()
 
 app = FastAPI(
-    title=       "WanderHead",
-    description= "A social app to find friends online.",
+    title=       "Xplorer",
+    description= "Find like-minded people online.",
     version=     "0.0.1",
     lifespan=    lifespan
+)
+
+app.add_middleware(
+    BaseHTTPMiddleware,
+    dispatch=log_requests
 )
 
 app.add_middleware(
@@ -38,5 +46,5 @@ def health():
     return {
         "status": True,
         "status_code": 200,
-        "message": " WanderHead is live."
+        "message": "Xplorer is live."
     }

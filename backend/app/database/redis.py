@@ -1,11 +1,12 @@
 from redis.asyncio import from_url
-from app.config import settings
-import asyncio
+from app.core.config import settings
+from app.core.logger import logger
 
 
 redis_client = None
 
 async def init_redis():
+    logger.info("Initializing Redis connection...")
     global redis_client
     redis_client = await from_url(settings.REDIS_URL, decode_responses=True)
 
@@ -13,16 +14,16 @@ async def close_redis():
     await redis_client.close()
 
 def getRedis():
+    logger.info("Retrieving Redis client")
     return redis_client
 
-
 # --- METHODS ---
-
 async def joinWaitlist(uid: int, genders: list[str], interests: list[str] = [], languages: list[str] = []):
     redis = getRedis()
     genders = "_".join(genders)
     interests = "_".join(interests) if interests else "_"
     languages = "_".join(languages) if languages else "_"
+    logger.info(f"Adding user {uid} to wait")
     await redis.hset(
         name="waitlist",
         key=str(uid),
@@ -37,11 +38,13 @@ async def leaveWaitlist(uid: int):
 # --- access waitlist data ---
 async def getWaitlist() -> dict[str, str]:
     redis = getRedis()
+    logger.info("Retrieving waitlist data")
     data = await redis.hgetall("waitlist")
     return data
 
 def getWaitlistUser(uid: int) -> dict:
     redis = getRedis()
+    logger.info(f"Retrieving user {uid} from waitlist")
     user = redis.hget("waitlist", str(uid))
     genders_str, uinterests_str, ulangs_str = user.split(":")
     ugenders = genders_str.split("_")

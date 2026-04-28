@@ -1,5 +1,6 @@
 uvicorn
 fastapi
+httpx
 sqlalchemy
 psycopg2
 pydantic
@@ -7,3 +8,6 @@ pydantic[email]
 redis[asyncio]
 pydantic_settings
 asyncpg
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==4.0.1

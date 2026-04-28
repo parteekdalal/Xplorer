@@ -2,19 +2,22 @@ from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List
 
 class LoginRequest(BaseModel):
-    key: str = Field(..., title="email or username")
+    key: str = Field(..., title="username")
     password: str = Field(..., title="password")
-    login_by_email: bool = Field(..., title="login with email or username?")
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
 
 class SignupRequest(BaseModel):
-    username: str = Field(..., min_length=1, max_length=50)
+    username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr = Field(...)
     password: str = Field(..., min_length=8)
     birth_year: int = Field(...)
-    gender: str = Field(...)
-    display_name: Optional[str] = Field(None, max_length=50)
-    bio: Optional[str] = Field(None, max_length=255)
-    interests: Optional[List] = Field(None)
+    gender: str = Field(..., )
+    display_name: Optional[str] = Field(..., max_length=50, nullable=False)
+    bio: Optional[str] = Field(..., max_length=255, nullable=True)
+    interests: Optional[List] = Field(...)
     languages: Optional[List] = Field(None)
 
 class SignupResponse(BaseModel):
