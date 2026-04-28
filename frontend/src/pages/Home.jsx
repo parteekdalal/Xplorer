@@ -6,40 +6,38 @@ import { Header } from '../components/basicComponents.jsx';
 import ChatUI from '../components/chat.jsx';
 
 export default function Home() {
-    const [currentView, setCurrentView] = useState('discover'); // 'discover' or 'chat'
+    const [currentView, setCurrentView] = useState('xplorer'); // 'xplore' or 'chat'
     const [currentRoom, setCurrentRoom] = useState(null);
 
-    const handleDiscover = () => {
+    const handleXplore = () => {
         // Generate a random room ID for now
         const roomId = `r:${Date.now()}:${Math.random().toString(36).substr(2, 9)}`;
         setCurrentRoom(roomId);
         setCurrentView('chat');
     };
 
-    const handleBackToDiscover = () => {
-        setCurrentView('discover');
+    const handleBackToXplore = () => {
+        setCurrentView('xplorer');
         setCurrentRoom(null);
     };
-    if (currentView === 'discover') {
+    if (currentView === 'xplorer') {
         return (
             <div id="home-page">
                 <Header />
-                <Discover onDiscover={handleDiscover} />
+                <Xplore onXplore={handleXplore} />
             </div>
         )
     } else {
         return (
-            <div id="home-page">
-                <ChatUI roomId={currentRoom} prev={handleBackToDiscover} />
-            </div>
+            <ChatUI roomId={currentRoom} prev={handleBackToXplore} />
         )
     }
 }
 
-function Discover({ onDiscover }) {
+function Xplore({ onXplore }) {
     return (
         <div id="discover">
-            <button className="btn btn-icon btn-main" title="search" onClick={onDiscover}>
+            <button className="btn btn-icon btn-main" title="search" onClick={onXplore}>
                 <FaSearch className="icon"/> Discover
             </button>
             <button className="btn btn-icon" title="preferences">
