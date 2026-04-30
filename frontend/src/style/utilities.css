@@ -16,19 +16,35 @@
 }
 
 .btn {
-    padding: 10px 15px;
-    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    border-radius: var(--border-radius-lg);
+    transition: all 250ms ease;
 }
+
 .btn-mini {
     width: 2.25rem;
     height: 2.25rem;
     padding: 5px;
     border-radius: 50%;
 }
-.btn-accent { background-color: var(--primary); }
-.btn-main { background-color: var(--primary); color: white; }
+.btn-big { min-width: 100px; }
+.btn-main {
+    height: 50px;
+    min-width: 150px;
+    background-color: var(--primary);
+    color: var(--text-primary);
+}
+.btn-main:hover {
+    background-color: var(--primary-hover);
+    scale: 0.95;
+}
 .btn-secondary { background-color: inherit; }
-.btn-secondary:hover { background-color: var(--primary-light); }
 
 .btn-icon {
     font-size: large;
@@ -40,11 +56,11 @@
 
 
     color: var(--text-primary);
-    background-color: var(--base);
+    background-color: inherit;
     transition: all 0.3s ease;
 }
 .container {
-    width: 80vw;
+    width: 100%;
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -82,7 +98,7 @@
     width: 250px;
     min-height: 100px;
     padding: 15px;
-    
+    z-index: 100;
     display: flex;
     gap: 20px;
     flex-direction: column;

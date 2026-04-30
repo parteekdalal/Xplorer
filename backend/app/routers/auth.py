@@ -10,10 +10,13 @@ router = APIRouter(prefix='/auth', tags=['authentication'])
 # --- endpoints --- 
 @router.post('/login', response_model=TokenResponse)
 async def login(req: LoginRequest):
-    db_res = await authLogin(key=req.key, password=req.password)
-    if not db_res['status']:
-        raise HTTPException(status_code=db_res['status_code'], detail=db_res['message'])
-    token = create_access_token({"sub": str(db_res["uid"])})
+    login_res = await authLogin(key=req.key, password=req.password)
+    if not login_res['status']:
+        raise HTTPException(status_code=login_res['status_code'], detail=login_res['message'])
+    token = create_access_token({
+        "uid": str(login_res["uid"]),
+        "username": login_res["username"]
+    })
     return {
         "status": True,
         "status_code": 200,
@@ -33,13 +36,16 @@ async def signup(req: SignupRequest):
         interests= " ".join(req.interests) if req.interests else "",
         languages= " ".join(req.languages) if req.languages else ""
     )
-    signup_res = await authSignup(user_info)
-    
-    if signup_res["status"]:
+    signup_res: bool = await authSignup(user_info)
+    if signup_res:
         login_res = await authLogin(key=req.username,
                               password=req.password)
         if login_res["status"]:
-            token = create_access_token({"sub": login_res["uid"]})
+
+            token = create_access_token({
+                "uid": str(login_res["uid"]),
+                "username": login_res["username"]
+            })
             return {
                 "status": True,
                 "status_code": 200,
@@ -48,6 +54,6 @@ async def signup(req: SignupRequest):
             }
     else:
         raise HTTPException(
-            status_code= signup_res["status_code"],
-            detail= signup_res["message"]
+            status_code= 400,
+            detail= "signup failed"
         )

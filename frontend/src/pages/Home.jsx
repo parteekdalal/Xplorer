@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
 import { FaSearch, FaToolbox } from 'react-icons/fa';
 
 import { Header } from '../components/basicComponents.jsx';
@@ -10,18 +10,24 @@ export default function Home() {
     const [currentRoom, setCurrentRoom] = useState(null);
 
     const handleXplore = () => {
-        // Generate a random room ID for now
-    //     try {
-    //         const response = await fetch("/api/discover", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify(discoverReq)
-    //         });
-    //     setCurrentRoom();
-    //     setCurrentView('chat');
-    };
+        // const discoverReq = {
+        //     uid: localStorage.getItem("uid"),
+        //     preferences: localStorage.getItem("preferences")
+        // }
+        // try {
+        //     const response = await fetch("/api/discover", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         },
+        //         body: JSON.stringify(discoverReq)
+        //     });
+        // } catch (error) {
+        //   console.error("error",error)  
+        // };
+        setCurrentRoom("r:1234");
+        setCurrentView('chat');
+    }
 
     const handleBackToXplore = () => {
         setCurrentView('xplorer');
@@ -31,6 +37,7 @@ export default function Home() {
         return (
             <div id="home-page">
                 <Header />
+                <h2 className="txt"><span className="txt-accent">Xplore</span> like-minded people</h2>
                 <Xplore onXplore={handleXplore} />
             </div>
         )

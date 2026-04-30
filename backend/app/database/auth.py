@@ -3,13 +3,11 @@ from jose import JWTError, jwt
 from sqlalchemy import select
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-
+from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorizationCredentials
 from app.models.users import User
 from app.database import AsyncSessionLocal
 from app.core.config import settings
 from app.core.logger import logger
-
 
 # ── Password Utils ──────────────────────────────────────────
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -35,8 +33,9 @@ def verify_token(token: str):
         return None
 
 # ── Auth dependency ──────────────────────────────────────
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+http_bearer = HTTPBearer()
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(http_bearer)):
+    token = credentials.credentials
     payload = verify_token(token)
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -67,8 +66,9 @@ async def authLogin(key: str, password: str):
             return {
                 "status": True,
                 "status_code": 200,
-                "message": f"welcome back, {user.display_name}",
-                "uid": user.id
+                "message": f"welcome back",
+                "uid": user.id,
+                "username": user.username
             }
     except Exception as e:
         logger.error(f"error occurred while logging in: {e}")
@@ -78,18 +78,14 @@ async def authLogin(key: str, password: str):
             "message": f"{e}"
         }
 
-async def authSignup(user_info: User):
+async def authSignup(user_info: User) -> bool:
     try:
         async with AsyncSessionLocal() as session:
             logger.info(f"attempting signup for user: {user_info.username}")
             user_info.password = hash_password(user_info.password)
             session.add(user_info)
             await session.commit()
-            return { "status": True }
+            return True
     except Exception as e:
         logger.error(f"error occurred while signing up user {user_info.username}: {e}")
-        return {
-            "status": False,
-            "status_code": 400,
-            "message": f"error: {e}"
-        }
+        return False

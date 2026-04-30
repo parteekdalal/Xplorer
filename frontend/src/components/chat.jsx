@@ -3,7 +3,7 @@ import { IoMdMale, IoMdSend, IoMdAttach, IoMdOptions, IoMdArrowBack } from "reac
 import useWebSocket from '../hooks/websocket';
 
 export default function ChatUI({ roomId, prev}) {
-    const [userId] = useState(`user_${Math.random().toString(36).substr(2, 9)}`);
+    const [userId] = useState(0);
     const { messages, send } = useWebSocket(`ws://api/chat/${roomId}/${userId}`);
     const [messageContent, setInputMessage] = useState({ io: 'msg-out', message: ''});
 
@@ -42,7 +42,7 @@ function ChatHeader({ details, prev }) {
             </button>
             <img src="/demopfp.webp" alt="profile pic" className="pfp" />
 
-            <h3 className="text-primary">Chat Room</h3>
+            <h3 className="txt">Chat Room</h3>
             <div className="chat-details">
                 <IoMdMale/>
                 <p className="text-secondary">{details.slice(0, 20)}...</p>
@@ -78,15 +78,7 @@ function Message({ message }) {
 function ChatInput({ value, onChange, onSend, onKeyPress }) {
     return (
         <div className="chat-input-container">
-            <button className="btn btn-icon"><IoMdAttach/></button>
-            {/* <input
-                type="text"
-                className="msg-input input"
-                value={value}
-                onChange={(e) => onChange(prev => ({ ...prev, message: e.target.value }))}
-                onKeyPress={onKeyPress}
-                placeholder="Type a message..."
-            /> */}
+            <button className="btn-icon"><IoMdAttach/></button>
             <textarea
                 className="msg-input input"
                 value={value}
@@ -100,7 +92,7 @@ function ChatInput({ value, onChange, onSend, onKeyPress }) {
                 rows={1}
             />
 
-            <button className="btn btn-primary" onClick={onSend}>
+            <button className="btn-mini btn-primary" onClick={onSend}>
                 <IoMdSend/>
             </button>
         </div>

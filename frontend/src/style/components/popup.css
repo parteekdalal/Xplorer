@@ -39,6 +39,20 @@
     gap: 10px;
 }
 
+/* info Popup Styles */
+.info {
+    border: 2px solid var(--info);
+}
+.info .popup-header {
+    color: var(--info);
+}
+.info p {
+    border-top: 1px solid var(--info);
+    border-bottom: 1px solid var(--info);
+}
+.info .btn {
+    background-color: var(--info);
+}
 
 /* Success Popup Styles */
 .success {
@@ -54,3 +68,34 @@
 .success .btn {
     background-color: var(--success);
 }
+
+/* warning Popup Styles */
+.warning {
+    border: 2px solid var(--warning);
+}
+.warning .popup-header {
+    color: var(--warning);
+}
+.warning p {
+    border-top: 1px solid var(--warning);
+    border-bottom: 1px solid var(--warning);
+}
+.warning .btn {
+    background-color: var(--warning);
+}
+
+/* error Popup Styles */
+.error {
+    border: 2px solid var(--error);
+}
+.error .popup-header {
+    color: var(--error);
+}
+.error p {
+    border-top: 1px solid var(--error);
+    border-bottom: 1px solid var(--error);
+}
+.error .btn {
+    background-color: var(--error);
+}
+

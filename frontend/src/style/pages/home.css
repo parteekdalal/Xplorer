@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     gap: 100px;
+    background-color: var(--base);
 }
 #discover {
     width: min(70vw, 500px);
@@ -15,7 +16,7 @@
     justify-content: space-around;
     position: relative;
     padding: 20px;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     border-radius: var(--border-radius-lg);
     transition: all 0.3s ease;
 }
@@ -23,14 +24,10 @@
 #discover .btn-main {
     scale: 1.5;
     background-color: var(--primary);
-}
-#discover button {
-    width: 150px;
-    margin-top: 20px;
-    background-color: var(--primary-light);
+    color: var(--text-inverse);
 }
 
-#discover button:hover {
+#discover .btn:hover {
     background-color: var(--primary);
     color: var(--text-inverse);
 }

@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.user import DiscoverRequest
 from app.database.redis import joinWaitlist, getWaitlist, createRoom
 from app.database.auth import get_current_user
+from app.database.user import getUser
 
 router = APIRouter(prefix='/user', tags=['user'])
 
@@ -16,7 +17,7 @@ GET, POST, PUT, DELETE
 """
 @router.get("/me")
 async def get_me(user = Depends(get_current_user)):
-    return user
+    return await getUser(user["username"])
 
 
 @router.post("/discover")
