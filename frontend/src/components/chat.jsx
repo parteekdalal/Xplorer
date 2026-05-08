@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import { IoMdMale, IoMdSend, IoMdAttach, IoMdOptions, IoMdArrowBack } from "react-icons/io";
 import useWebSocket from '../hooks/websocket';
 
+const sender = localStorage.getItem("username");
+const token = localStorage.getItem("access_token");
+
 export default function ChatUI({ roomId, prev}) {
-    const [userId] = useState(0);
-    const { messages, send } = useWebSocket(`ws://api/chat/${roomId}/${userId}`);
-    const [messageContent, setInputMessage] = useState({ io: 'msg-out', message: ''});
+    const [otherPerson, setOtherPerson] = useState(null);
+    const { messages, send } = useWebSocket(`ws://localhost:8000/chat/${roomId}?token=${token}`);
+    const [messageContent, setInputMessage] = useState({ sender: sender, message: ''});
 
     const handleSendMessage = () => {
         if (messageContent.message.trim()) {
             send(messageContent);
-            setInputMessage({ io: 'msg-out', message: ''});
+            setInputMessage({ sender: sender, message: ''});
         }
     };
 
@@ -22,7 +25,7 @@ export default function ChatUI({ roomId, prev}) {
 
     return (
         <div className="chat-ui">
-            <ChatHeader details={`room: ${roomId}`} prev={prev} />
+            <ChatHeader details={roomId} prev={prev} />
             <ChatMessages messages={messages} />
             <ChatInput
                 value={messageContent.message}
@@ -45,7 +48,7 @@ function ChatHeader({ details, prev }) {
             <h3 className="txt">Chat Room</h3>
             <div className="chat-details">
                 <IoMdMale/>
-                <p className="text-secondary">{details.slice(0, 20)}...</p>
+                <p className="text-secondary">{details}...</p>
             </div>
 
             <div className="chat-options">
@@ -61,15 +64,21 @@ function ChatMessages({ messages }) {
     return (
         <div className="chat-messages">
             {messages.map((message, index) => (
-                <Message key={index} message={message} />
+                <Message
+                    key={index}
+                    message={message}
+                    io={message.sender === sender ? "msg-out" : "msg-in"}
+                />
             ))}
         </div>
     )
 }
 
-function Message({ message }) {
+function Message({ message, io }) {
     return (
-        <div className={`msg ${message.io || ''}`}>
+        <div className={`msg ${io}`}>
+            {console.log(message)}
+            <h4>{message.sender}</h4>
             <p className="text-primary">{message.message}</p>
         </div>
     )

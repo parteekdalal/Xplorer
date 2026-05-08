@@ -34,7 +34,7 @@ export function Loading() {
 
 export function Menu() {
     return (
-        <div className="menu">
+        <div className="menu menu-tr">
             <section className="menu-section">
                 <button className="btn">
                     <AiOutlineUser /> Edit Profile
@@ -59,8 +59,8 @@ export function Notifications() {
     
     if (notifications.length === 0) {
         return (
-            <div className="menu notifications-menu">
-                <h5 className="">Notifications will appear here...</h5>
+            <div className="menu menu-tr">
+                <h5 className="txt-accent-2">Notifications will appear here...</h5>
             </div>
         )
     } else {

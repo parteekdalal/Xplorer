@@ -56,17 +56,16 @@ function Login({ handleUserState }) {
 
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error("error during login: ", errorData);
                 setPopUp({
                     status: "error",
                     message: errorData.detail || "Login failed"
                 });
                 return;
             }
-
             const data = await response.json();
-            setPopUp({ status: "success", message: "You're in."});
             localStorage.setItem("access_token", data.access_token);
-            navigate("/");
+            localStorage.setItem("username", data.username);
         } catch (err) {
             setPopUp({
                 status: "error",
@@ -74,6 +73,7 @@ function Login({ handleUserState }) {
             });
         } finally {
             setIsLoading(false);
+            navigate("/");
         }
     };
 
@@ -174,13 +174,13 @@ function SignUp({ handleUserState }) {
                 return;
             }
             const data = await response.json();
-            setPopUp({ status: "success", message: "You're in" });
             localStorage.setItem("access_token", data.access_token);
-            navigate("/");
+            localStorage.setItem("username", data.username);
         } catch (err) {
             setPopUp({ status: "error", message: "Signup failed: "+err || "Signup failed" });
         } finally {
             setIsLoading(false);
+            navigate("/");
         }
     };
     if (step === 0){

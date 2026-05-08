@@ -2,13 +2,12 @@ from fastapi import APIRouter, HTTPException
 
 from app.database.auth import authLogin, authSignup, create_access_token
 from app.models import User
-from app.schemas.auth import SignupRequest, LoginRequest, TokenResponse
-from app.core.logger import logger
+from app.schemas.auth import SignupRequest, LoginRequest
 
 router = APIRouter(prefix='/auth', tags=['authentication'])
 
 # --- endpoints --- 
-@router.post('/login', response_model=TokenResponse)
+@router.post('/login')
 async def login(req: LoginRequest):
     login_res = await authLogin(key=req.key, password=req.password)
     if not login_res['status']:
@@ -20,7 +19,8 @@ async def login(req: LoginRequest):
     return {
         "status": True,
         "status_code": 200,
-        "access_token": token
+        "access_token": token,
+        "username": login_res["username"]
         }
     
 @router.post('/signup')
@@ -50,10 +50,8 @@ async def signup(req: SignupRequest):
                 "status": True,
                 "status_code": 200,
                 "message": "welcome to wanderhead",
-                "access_token": token
+                "access_token": token,
+                "username": login_res["username"]
             }
     else:
-        raise HTTPException(
-            status_code= 400,
-            detail= "signup failed"
-        )
+        raise HTTPException(status_code= 400, detail= "signup failed")

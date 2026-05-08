@@ -1,8 +1,19 @@
 :root {
-    --primary: hsl(45, 86%, 58%);
-    --primary-hover: hsl(45, 86%, 52%);
-    --primary-light: hsl(45, 86%, 80%);
-    --primary-dark: hsl(45, 86%, 35%);
+    --primary-1: hsl(300, 50%, 15%);
+    --primary-2: hsl(300, 100%, 25%);
+    --primary-3: hsl(300, 100%, 40%);
+    --primary-4: hsl(300, 100%, 50%);
+    --primary-5: hsl(300, 100%, 70%);
+    --primary-6: hsl(300, 60%, 75%);
+    --primary-7: hsl(300, 60%, 90%);
+
+    --secondary-1: hsl(160, 60%, 15%);
+    --secondary-2: hsl(160, 100%, 25%);
+    --secondary-3: hsl(160, 100%, 40%);
+    --secondary-4: hsl(160, 100%, 50%);
+    --secondary-5: hsl(160, 100%, 70%);
+    --secondary-6: hsl(160, 60%, 75%);
+    --secondary-7: hsl(160, 60%, 90%);
 
     --success: hsl(142, 71%, 45%);
     --warning: hsl(38, 92%, 50%);
@@ -21,7 +32,7 @@
     --gray-900: hsl(0, 0%, 5%);
 
     --base: var(--gray-50);
-    --bg-primary: var(--gray-100);
+    --bg-primary: var(--primary-6);
     --bg-secondary: var(--gray-200);
     --bg-tertiary: var(--gray-300);
     --bgt-primary: hsla(0, 0%, 90%, 0.5);
@@ -33,11 +44,6 @@
     --text-tertiary: var(--gray-500);
     --text-inverse: var(--gray-50);
 
-    --border-light: 2px solid var(--gray-200);
-    --border-medium: 2px solid var(--gray-300);
-    --border-dark: 2px solid var(--gray-400);
-
-    --focus-ring: hsla(45, 86%, 58%, 0.5);
     --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.05);
     --shadow-md: 0 4px 6px -1px hsla(0, 0%, 0%, 0.1), 0 2px 4px -1px hsla(0, 0%, 0%, 0.06);
     --shadow-lg: 0 10px 15px -3px hsla(0, 0%, 0%, 0.1), 0 4px 6px -2px hsla(0, 0%, 0%, 0.05);
@@ -50,13 +56,22 @@
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Primary Colors - Dark Theme */
-        --primary: hsl(45, 86%, 62%);        /* Slightly brighter for dark mode */
-        --primary-hover: hsl(45, 86%, 68%);
-        --primary-light: hsl(45, 86%, 15%);
-        --primary-dark: hsl(45, 86%, 75%);
+        --primary-1: hsl(300, 60%, 75%);
+        --primary-2: hsl(300, 100%, 70%);
+        --primary-3: hsl(300, 100%, 50%);
+        --primary-4: hsl(300, 100%, 40%);
+        --primary-5: hsl(300, 100%, 25%);
+        --primary-6: hsl(300, 50%, 15%);
+        --primary-7: hsl(300, 50%, 10%);
 
-        /* Semantic Colors - Adjusted for dark mode */
+        --secondary-1: hsl(160, 60%, 75%);
+        --secondary-2: hsl(160, 100%, 70%);
+        --secondary-3: hsl(160, 100%, 50%);
+        --secondary-4: hsl(160, 100%, 40%);
+        --secondary-5: hsl(160, 100%, 25%);
+        --secondary-6: hsl(160, 50%, 15%);
+        --secondary-7: hsl(160, 50%, 10%);
+
         --success: hsl(142, 71%, 55%);
         --warning: hsl(38, 92%, 60%);
         --error: hsl(0, 84%, 65%);
@@ -82,11 +97,6 @@
         --text-tertiary: var(--gray-700);
         --text-inverse: var(--gray-50);
 
-        --border-light: 2px solid var(--gray-700);
-        --border-medium: 2px solid var(--gray-600);
-        --border-dark: 2px solid var(--gray-500);
-
-        --focus-ring: hsla(45, 86%, 62%, 0.5);
         --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.3);
         --shadow-md: 0 4px 6px -1px hsla(0, 0%, 0%, 0.4), 0 2px 4px -1px hsla(0, 0%, 0%, 0.3);
         --shadow-lg: 0 10px 15px -3px hsla(0, 0%, 0%, 0.5), 0 4px 6px -2px hsla(0, 0%, 0%, 0.4);

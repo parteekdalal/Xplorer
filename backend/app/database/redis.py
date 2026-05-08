@@ -14,104 +14,136 @@ async def close_redis():
     await redis_client.close()
 
 def getRedis():
-    logger.info("Retrieving Redis client")
     return redis_client
 
 # --- METHODS ---
-async def joinWaitlist(uid: int, genders: list[str], interests: list[str] = [], languages: list[str] = []):
+async def joinWaitlist(username: str, genders: list[str], interests: list[str] = [], languages: list[str] = []) -> dict:
     redis = getRedis()
-    genders = "_".join(genders)
+
+    genders = "_".join(genders) if genders else "a_a"
     interests = "_".join(interests) if interests else "_"
-    languages = "_".join(languages) if languages else "_"
-    logger.info(f"Adding user {uid} to wait")
+    languages = "_".join(languages) if languages else "english"
+
+    preferences = f"{genders}:{interests}:{languages}"
+    logger.info(f"Adding to waitlist: {username}")
     await redis.hset(
         name="waitlist",
-        key=str(uid),
-        value=f"{genders}:{interests}:{languages}"
+        key=username,
+        value=preferences
     )
+    return {
+        "username": username,
+        "genders": genders,
+        "languages": languages,
+        "interests": interests
+    }
 
-async def leaveWaitlist(uid: int):
+async def leaveWaitlist(username: str) -> None:
     redis = getRedis()
-    await redis.hdel("waitlist", str(uid))
-
+    await redis.hdel("waitlist", username)
 
 # --- access waitlist data ---
 async def getWaitlist() -> dict[str, str]:
     redis = getRedis()
-    logger.info("Retrieving waitlist data")
     data = await redis.hgetall("waitlist")
     return data
 
-def getWaitlistUser(uid: int) -> dict:
+def getWaitlistUser(uid: str) -> dict:
     redis = getRedis()
-    logger.info(f"Retrieving user {uid} from waitlist")
-    user = redis.hget("waitlist", str(uid))
+    logger.info(f"waitlist: getting user: {uid}")
+    user = redis.hget("waitlist", uid)
     genders_str, uinterests_str, ulangs_str = user.split(":")
     ugenders = genders_str.split("_")
     uinterests = uinterests_str.split("_") if uinterests_str != "_" else []
     ulangs = ulangs_str.split("_") if ulangs_str != "_" else []
     return {
-        'uid': int(uid),
+        'uid': uid,
         'genders': ugenders,
         'interests': uinterests,
         'languages': ulangs
     }
 
-async def createRoom(room_id: str, users: str = ""):
+async def createRoom(room_id: str, owner: str):
     redis = getRedis()
-    redis.hset(
+    await redis.hset(
         name="rooms",
-        key=room_id,
-        value=users   
-    )    
+        key=owner,
+        value=room_id
+    )
 
-async def filterWaitlist(genders: list[str] = None, interests: list[str] = None, languages: list[str] = None):
+async def getRoomId(owner: str) -> str|None:
+    redis = getRedis()
+    room = await redis.hget(
+        name="rooms",
+        key=owner
+    )
+    return room if room else None
+
+async def setMatchResult(username:str, details:str):
+    redis = getRedis()
+    await redis.hset(
+        name="match_results",
+        key=username,
+        value=details
+    )
+async def getMatchResult(username:str):
+    redis = getRedis()
+    return await redis.hget(name="match_results", key=username)
+
+async def delMatchResult(username:str):
+    redis = getRedis()
+    await redis.hdel("match_results", username)
+
+async def filterWaitlist(user_id: str, genders: list[str] = ["a", "a"], languages: list[str] = ["english"], interests: list[str] = None):
     """
+    Filter waitlist and return matches with match score.  
+    
+    ---
+    ## Proccess
     - filter the entries of the waitlist based on gender, interests, languages.
-    - return sorted list of matching entries by match score (interests + languages matches)
+    - return sorted list of matching entries by match score [interests + languages].
     """
     waitlist = await getWaitlist()
     matches = []
     if waitlist:
-        for uid, info in waitlist.items():
-            ugenders, uinterests_str, ulangs_str = info.split(":")
-            uinterests = uinterests_str.split("_") if uinterests_str != "_" else []
-            ulangs = ulangs_str.split("_") if ulangs_str != "_" else []
-            
-            # Filter by gender preferences
+        for uid, preferences in waitlist.items():
+            if uid == user_id: continue
+            score = 0
+            ugenders, uinterests_str, ulangs_str = preferences.split(":")
+
             if genders:
                 my_gender, my_preferred_gender = genders
-                candidate_gender, candidate_preferred_gender = ugenders
+                candidate_gender, candidate_preferred_gender = ugenders.split("_")
 
-                # current user must accept the candidate
-                if my_preferred_gender != "a" and my_preferred_gender != candidate_gender:
-                    continue
-                # candidate must accept the current user
-                if candidate_preferred_gender != "a" and candidate_preferred_gender != my_gender:
-                    continue
+                if my_preferred_gender != "a" and my_preferred_gender != candidate_gender: continue           # am i interested?
+                if candidate_preferred_gender != "a" and candidate_preferred_gender != my_gender: continue    # is the other person interest?
             
-            # Check interests match (any overlap if interests provided)
-            interests_match = not interests or bool(set(interests) & set(uinterests))
-            if interests and not interests_match:
-                continue
-            
-            # Check languages match (any overlap if languages provided)
-            langs_match = not languages or bool(set(languages) & set(ulangs))
-            if languages and not langs_match:
-                continue
-            
-            # Calculate match score
-            score = (len(set(interests or []) & set(uinterests)) + 
-                     len(set(languages or []) & set(ulangs)))
+            # match languages
+            if languages and ulangs_str != "_":
+                ulangs = ulangs_str.split("_")
+                l_score = 0
+                for l in languages:
+                    if l in ulangs:
+                        l_score+=2
+                if l_score: score+=l_score
+                else: continue
+
+            # match interests
+            if interests and uinterests_str != "_":
+                uinterests = uinterests_str.split("_")
+                i_score = 0
+                for i in interests:
+                    if i in uinterests:
+                        i_score+=2
+                if i_score: score+=i_score
+                else: continue
             
             matches.append({
-                'uid': int(uid),
-                'gender': ugenders,
-                'interests': uinterests,
-                'languages': ulangs,
-                'score': score
+                'username': uid,
+                'gender': ugenders[0],
+                'interests': uinterests_str.split("_"),
+                'languages': ulangs_str.split("_"),
+                'match': score
             })
-    
-    # Sort by score descending
-    matches.sort(key=lambda x: x['score'], reverse=True)
+    matches.sort(key=lambda x: x['match'], reverse=True)
     return matches

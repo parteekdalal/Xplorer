@@ -3,7 +3,7 @@ from jose import JWTError, jwt
 from sqlalchemy import select
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.models.users import User
 from app.database import AsyncSessionLocal
 from app.core.config import settings

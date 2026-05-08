@@ -6,27 +6,26 @@ export default function useWebSocket(url) {
 
   useEffect(() => {
     ws.current = new WebSocket(url);
-
+    ws.current.onopen = () => { console.log("connected"); };
     ws.current.onmessage = (event) => {
       try {
         const messageObj = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
         setMessages((prev) => [...prev, messageObj]);
       } catch (e) {
-        // If parsing fails, treat it as a plain string message from other user
-        setMessages((prev) => [...prev, { io: 'msg-out', message: event.data }]);
+        setMessages((prev) => [...prev, { sender: "_", message: event.data }]);
       }
     };
-
-    return () => ws.current.close(); // cleanup on unmount
+    return () => ws.current.close();
   }, [url]);
 
   const send = (messageObj) => {
     if (messageObj.message?.trim()) {
       const msgToSend = typeof messageObj === 'object' ? JSON.stringify(messageObj) : messageObj;
-      ws.current?.send(msgToSend);
-      setMessages((prev) => [...prev, messageObj]); // Add message object immediately to local state
+      if (ws.current?.readyState === WebSocket.OPEN) {
+        ws.current.send(msgToSend);
+        setMessages((prev) => [...prev, messageObj]);
+      }
     }
   };
-
   return { messages, send };
 }

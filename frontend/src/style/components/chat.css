@@ -1,28 +1,29 @@
 /* Chat UI styles */
 .chat-ui {
-    width: min(90vw, 900px);
+    width: min(100vw, 700px);
     min-height: 100vh;
-    padding: 10px;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: var(--bg-primary);
+    overflow: hidden;
+    background: linear-gradient(var(--primary-7), var(--secondary-7));
 }
 
 
 /* header style */
 .chat-header, .chat-input-container {
+    margin: 10px 20px;
     padding: 5px 10px;
     position: sticky;
 
     background-color: var(--bgt-primary);
     backdrop-filter: blur(10px);
-    border: var(--border-light);
+    border: 2px solid var(--secondary-6);
     border-radius: var(--border-radius-lg);
 }
 .chat-header {
     top: 10px;
-    grid-area: header;
     display : grid;
     grid-template-columns: 50px 50px 1fr 50px;
     grid-template-areas: 
@@ -33,7 +34,7 @@
 .chat-header #prev-btn {
     grid-area: prev;
     font-size: larger;
-    background-color: var(--bgt-tertiary);
+    background-color: var(--bgt-secondory);
 }
 .pfp {
     grid-area: pfp;
@@ -46,7 +47,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    color: var(--text-secondary);
+    color: var(--gray-600);
 }
 .chat-options {
     grid-area: options;
@@ -57,17 +58,26 @@
 
 .chat-messages {
     flex: 1;
-    width: min(88vw, 800px);
-    height: auth;
-
-    grid-area: messages;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    overflow-y: scroll;
     gap: 10px;
     padding: 10px;
 }
+/* Remove scrollbar-color and scrollbar-width, use these instead */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
 
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--secondary-6);
+    border-radius: 20px;
+}
 
 .chat-input-container {
     grid-area: input;
@@ -83,7 +93,6 @@
 
 .msg {
     padding: 8px 12px;
-    background-color: var(--bg-secondary);
     border-radius: var(--border-radius);
     max-width: 70%;
     word-wrap: break-word;
@@ -95,12 +104,12 @@
     color: var(--text-primary);
 }
 .msg-out {
-    background-color: var(--primary);
+    background-color: var(--primary-5);
     color: var(--text-primary);
     align-self: flex-end;
 }
 .msg-in {
-    background-color: var(--bg-secondary);
+    background-color: var(--gray-200);
     color: var(--text-primary);
     align-self: flex-start;
 }

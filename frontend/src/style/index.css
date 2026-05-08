@@ -6,6 +6,7 @@
 
 /* Component styles */
 @import './components/header.css';
+@import './components/menu.css';
 @import './components/chat.css';
 @import './components/popup.css';
 

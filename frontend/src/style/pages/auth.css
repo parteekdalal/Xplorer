@@ -34,5 +34,4 @@
 .auth-form .input {
     font-size: medium;
     background-color: var(--bgt-tertiary);
-    color: var(--text-inverse);
 }
