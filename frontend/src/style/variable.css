@@ -7,13 +7,13 @@
     --primary-6: hsl(300, 60%, 75%);
     --primary-7: hsl(300, 60%, 90%);
 
-    --secondary-1: hsl(160, 60%, 15%);
+    --secondary-1: hsl(160, 100%, 15%);
     --secondary-2: hsl(160, 100%, 25%);
     --secondary-3: hsl(160, 100%, 40%);
     --secondary-4: hsl(160, 100%, 50%);
     --secondary-5: hsl(160, 100%, 70%);
-    --secondary-6: hsl(160, 60%, 75%);
-    --secondary-7: hsl(160, 60%, 90%);
+    --secondary-6: hsl(160, 100%, 80%);
+    --secondary-7: hsl(160, 100%, 90%);
 
     --success: hsl(142, 71%, 45%);
     --warning: hsl(38, 92%, 50%);
@@ -32,16 +32,16 @@
     --gray-900: hsl(0, 0%, 5%);
 
     --base: var(--gray-50);
-    --bg-primary: var(--primary-6);
+    --bg-primary: var(--gray-100);
     --bg-secondary: var(--gray-200);
     --bg-tertiary: var(--gray-300);
-    --bgt-primary: hsla(0, 0%, 90%, 0.5);
-    --bgt-secondary: hsla(0, 0%, 70%, 0.5);
-    --bgt-tertiary: hsla(0, 0%, 60%, 0.5);
+    --bgt-primary: hsla(0, 0%, 90%, 0.3);
+    --bgt-secondary: hsla(0, 0%, 70%, 0.3);
+    --bgt-tertiary: hsla(0, 0%, 60%, 0.3);
 
     --text-primary: var(--gray-900);
-    --text-secondary: var(--gray-600);
-    --text-tertiary: var(--gray-500);
+    --text-secondary: var(--gray-700);
+    --text-tertiary: var(--gray-600);
     --text-inverse: var(--gray-50);
 
     --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.05);
@@ -56,21 +56,21 @@
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
     :root {
-        --primary-1: hsl(300, 60%, 75%);
+        --primary-1: hsl(300, 100%, 80%);
         --primary-2: hsl(300, 100%, 70%);
         --primary-3: hsl(300, 100%, 50%);
         --primary-4: hsl(300, 100%, 40%);
         --primary-5: hsl(300, 100%, 25%);
-        --primary-6: hsl(300, 50%, 15%);
-        --primary-7: hsl(300, 50%, 10%);
+        --primary-6: hsl(300, 100%, 15%);
+        --primary-7: hsl(300, 100%, 10%);
 
-        --secondary-1: hsl(160, 60%, 75%);
+        --secondary-1: hsl(160, 100%, 80%);
         --secondary-2: hsl(160, 100%, 70%);
         --secondary-3: hsl(160, 100%, 50%);
         --secondary-4: hsl(160, 100%, 40%);
         --secondary-5: hsl(160, 100%, 25%);
-        --secondary-6: hsl(160, 50%, 15%);
-        --secondary-7: hsl(160, 50%, 10%);
+        --secondary-6: hsl(160, 100%, 15%);
+        --secondary-7: hsl(160, 70%, 10%);
 
         --success: hsl(142, 71%, 55%);
         --warning: hsl(38, 92%, 60%);
@@ -88,13 +88,14 @@
         --gray-800: hsl(0, 0%, 85%);
         --gray-900: hsl(0, 0%, 95%);
         
-        --bgt-primary: hsla(0, 0%, 0%, 0.5);
-        --bgt-secondary: hsla(0, 0%, 10%, 0.5);
-        --bgt-tertiary: hsla(0, 0%, 20%, 0.5);
+        --bgt-primary: hsla(0, 0%, 0%, 0.3);
+        --bgt-secondary: hsla(0, 0%, 5%, 0.3);
+        --bgt-tertiary: hsla(0, 0%, 10%, 0.3);
 
         --text-primary: var(--gray-900);
-        --text-secondary: var(--gray-800);
-        --text-tertiary: var(--gray-700);
+        
+        --text-secondary: var(--gray-700);
+        --text-tertiary: var(--gray-600);
         --text-inverse: var(--gray-50);
 
         --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.3);

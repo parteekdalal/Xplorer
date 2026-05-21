@@ -5,7 +5,7 @@ sqlalchemy
 psycopg2
 pydantic
 pydantic[email]
-redis[asyncio]
+redis
 pydantic_settings
 asyncpg
 python-jose[cryptography]

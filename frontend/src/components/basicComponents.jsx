@@ -1,14 +1,26 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { IoMdNotifications, IoIosWarning } from "react-icons/io";
+import { IoExit } from "react-icons/io5";
 import { AiOutlineUser, AiFillSetting } from "react-icons/ai";
 import { FaToolbox, FaCheckCircle } from "react-icons/fa";
 
+const me = localStorage.getItem("username");
+
 export function Header() {
     const [openMenu, setOpenMenu] = useState(null);
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (e.key === "Escape") { setOpenMenu(null);}
+        };
+        document.addEventListener('keydown', handleKeyPress);
+        return () => { document.removeEventListener('keydown', handleKeyPress); };
+    }, [openMenu]);
 
     return (
         <div id="header">
-            <a href="/"><img src="/logo.png" alt="Logo" className="logo"/></a>
+            <a href="/"><img src="/Xplorer-1.svg" alt="Logo" className="logo"/></a>
             <div className="header-right">
                 <button className="btn-mini btn-icon" onClick={() => setOpenMenu(prev => prev != "notifications" ? "notifications" : null)}>
                     <IoMdNotifications />
@@ -33,35 +45,44 @@ export function Loading() {
 }
 
 export function Menu() {
+    const navigate = useNavigate();
     return (
-        <div className="menu menu-tr">
-            <section className="menu-section">
-                <button className="btn">
-                    <AiOutlineUser /> Edit Profile
-                </button>
-                <button className="btn">
-                    <FaToolbox /> Preferences
-                </button>
-            </section>
+        <>
+            <div className="menu menu-tr">
+                <section className="menu-section">
+                    { me ? <button className="btn" onClick={() => {navigate(`/profile/${me}`)}}>
+                        <AiOutlineUser /> Me
+                    </button> : <button className="btn" onClick={() => {navigate("/auth")}}>
+                        <AiOutlineUser /> Join Explorer
+                    </button>}
+                    
+                    <button className="btn">
+                        <FaToolbox /> Preferences
+                    </button>
+                </section>
 
-            <section className="menu-section">
-                <button className="btn">
-                    <AiFillSetting /> Settings
-                </button>
-            </section>
-        </div>
+                <section className="menu-section">
+                    <button className="btn">
+                        <AiFillSetting /> Settings
+                    </button>
+                </section>
+            </div>
+            { createPortal(<div className="menu-overlay" />, document.body ) }
+        </>
     )
 }
 
 export function Notifications() {
     const [notifications, setNotifications] = useState([])
     
-    
     if (notifications.length === 0) {
         return (
-            <div className="menu menu-tr">
-                <h5 className="txt-accent-2">Notifications will appear here...</h5>
-            </div>
+            <>
+                <div className="menu menu-tr">
+                    <h5 className="txt-secondary">Notifications will appear here...</h5>
+                </div>
+                { createPortal(<div className="menu-overlay" />, document.body ) }
+            </>
         )
     } else {
         return (

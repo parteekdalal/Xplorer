@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app.database.auth import authLogin, authSignup, create_access_token
+from app.database.auth import authLogin, authSignup, create_access_token, usernameAvailable
 from app.models import User
 from app.schemas.auth import SignupRequest, LoginRequest
 
@@ -55,3 +55,7 @@ async def signup(req: SignupRequest):
             }
     else:
         raise HTTPException(status_code= 400, detail= "signup failed")
+    
+@router.get("/username_availability/{username}")
+async def username_availability(username: str):
+    return await usernameAvailable(username=username)

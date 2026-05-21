@@ -1,4 +1,4 @@
-/* Loading animation */
+/* Loading spin */
 .loading-container {
     height: 30px;
     width: 30px;
@@ -23,4 +23,19 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+
+/* Searching */
+.searching { animation: searching 4s linear infinite;}
+
+@keyframes searching {
+  0%   { transform: translateX(0px)   translateY(0px)    rotate(0deg); }
+  15%  { transform: translateX(0px)   translateY(-10px)  rotate(30deg); }
+  30%  { transform: translateX(10px)  translateY(0px)    rotate(60deg); }
+  45%  { transform: translateX(0px)   translateY(10px)   rotate(90deg); }
+  60%  { transform: translateX(-10px) translateY(0px)    rotate(60deg); }
+  75%  { transform: translateX(0px)   translateY(-10px)  rotate(30deg); }
+  90%  { transform: translateX(10px)  translateY(0px)    rotate(0deg); }
+  100% { transform: translateX(0px)   translateY(0px)    rotate(0deg); }
 }

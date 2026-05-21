@@ -1,11 +1,37 @@
+import asyncio
+import uuid
 from time import time
 from datetime import datetime
 from sqlalchemy import select
 
 from app.database import AsyncSessionLocal
-from app.database.redis import joinWaitlist, leaveWaitlist, filterWaitlist, setMatchResult, getMatchResult, delMatchResult
+from app.database.redis import getRedis, joinWaitlist, leaveWaitlist, filterWaitlist, setMatchResult, getMatchResult, delMatchResult
 from app.models.users import User
 from app.core.logger import logger
+
+
+# Atomically claims a match:
+#   KEYS[1] = match_results hash
+#   KEYS[2] = waitlist hash
+#   ARGV[1] = candidate username
+#   ARGV[2] = match detail string  "{room_id}:{initiator}"
+#   ARGV[3] = initiator username
+#
+# Uses HSETNX to claim candidate's slot — if it's already claimed by another
+# initiator, this is a no-op and returns 0. On success, removes both parties
+# from the waitlist atomically.
+_CLAIM_MATCH_LUA = """
+local claimed = redis.call('HSETNX', KEYS[1], ARGV[1], ARGV[2])
+if claimed == 1 then
+    redis.call('HDEL', KEYS[2], ARGV[1])
+    redis.call('HDEL', KEYS[2], ARGV[3])
+end
+return claimed
+"""
+
+POLL_INTERVAL  = 0.5   # seconds between Redis polls
+XPLORE_TIMEOUT = 10.0  # total wait budget in seconds
+
 
 async def getUser(key: str):
     """
@@ -49,54 +75,65 @@ async def getUser(key: str):
             "message": f"{e}"
         }
     
-async def xploreWaitlist(username: str, preferred_gender: str):
+async def xploreWaitlist(username: str, preferred_gender: str) -> dict:
     user_info = await getUser(username)
-    user_info["data"]["genders"] = [user_info["data"]["gender"], preferred_gender]
+    data = user_info["data"]
+    genders   = [data["gender"], preferred_gender]
 
     await joinWaitlist(
-        username= username,
-        genders= user_info["data"]["genders"],
-        languages= user_info["data"]["languages"],
-        interests= user_info["data"]["interests"]
+        username=username,
+        genders=genders,
+        languages=data["languages"],
+        interests=data["interests"],
     )
-    curr_match = {}
-    start_xplore, xplore_duration = time(), time()
 
-    while xplore_duration - start_xplore < 10: # stop after 10 seconds
-        # Look for an existing match
-        match_result = await getMatchResult(username)
-        if match_result:
-            details = match_result.split(":")
-            await delMatchResult(username)
-            await leaveWaitlist(username)
-            return {
-                "status": True,
-                "room_id": details[0],
-                "match": details[1]
-            }
-        
-        # search for a match if it doesn't exist
-        filter_res = await filterWaitlist(
-            user_id= username,
-            genders= user_info["data"]["genders"],
-            languages= user_info["data"]["languages"],
-            interests= user_info["data"]["interests"]
-        )
-        if filter_res:
-            curr_match = filter_res[0]
-            room_id = str(xplore_duration)[-4:]
-            await setMatchResult(
-                username=curr_match["username"],
-                details=f"{room_id}:{username}"
+    redis       = getRedis()
+    claim_match = redis.register_script(_CLAIM_MATCH_LUA)
+    deadline    = time() + XPLORE_TIMEOUT
+
+    try:
+        while time() < deadline:
+
+            # 1. Were we matched by someone else?
+            match_result = await getMatchResult(username)
+            if match_result:
+                room_id, matcher = match_result.split(":", 1)
+                await delMatchResult(username)
+                # leaveWaitlist handled by finally; the Lua script
+                # already removed us when the other side claimed the match.
+                return {"status": True, "room_id": room_id, "match": matcher}
+
+            # 2. Try to claim a match ourselves
+            candidates = await filterWaitlist(
+                user_id=username,
+                genders=genders,
+                languages=data["languages"],
+                interests=data["interests"],
             )
-            await leaveWaitlist(username)
-            return {
-                "status": True,
-                "room_id": room_id,
-                "match": curr_match["username"]
-            }
-        xplore_duration = time()
-    return {
-        "status": False,
-        "message": "could not find a match."
-    }
+
+            for candidate in candidates:
+                room_id      = uuid.uuid4().hex[:6]
+                match_detail = f"{room_id}:{username}"
+
+                claimed = await claim_match(
+                    keys=["match_results", "waitlist"],
+                    args=[candidate["username"], match_detail, username],
+                )
+
+                if claimed:
+                    # Lua already removed both parties from the waitlist.
+                    return {
+                        "status":  True,
+                        "room_id": room_id,
+                        "match":   candidate["username"],
+                    }
+                # Candidate was sniped by a concurrent initiator — try next.
+
+            await asyncio.sleep(POLL_INTERVAL)
+
+    finally:
+        # Guaranteed cleanup: covers timeout, passive match, and any
+        # unexpected exception. HDEL on a missing key is a no-op.
+        await leaveWaitlist(username)
+
+    return {"status": False, "message": "could not find a match."}

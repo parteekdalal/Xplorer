@@ -2,25 +2,32 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 80px;
-    background-color: var(--base);
+    background: linear-gradient(var(--base), var(--secondary-7));
 }
+
+#auth .headline {
+    margin: 40px;
+    margin-top: 140px;
+    color: var(--primary-1);
+    transition: all 500ms ease;
+}
+#auth .headline:hover { color: var(--secondary-1); }
+.auth-page .btn { height: 50px; width: 150px;}
+#auth .btn:hover { background-color: var(--primary-4);}
+
 .auth-page {
     min-height: 350px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 50px;
-}
-.auth-page .btn-secondary:hover {
-    background-color: var(--hover-bg);
+    gap: 30px;
 }
 
 .auth-form {
     display: flex;
-    min-height: 200px;
+    min-height: 300px;
+    width: 300px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -30,8 +37,25 @@
     background-color: var(--bgt-primary);
     border-radius: var(--border-radius);
 }
+.auth-form .container { width: 240px; }
+.auth-form .container .input { flex: 0.7; }
+.auth-form .gender-btn {
+    flex: 0.3;
+    height: 40px;
+    background-color: var(--gray-200);
+    border-radius: var(--border-radius);
+}
+.auth-form .gender-btn:hover { box-shadow: 0 0 5px 2px var(--secondary-6); }
+.auth-form .gender-btn:focus { box-shadow: 0 0 5px 2px var(--primary-4); }
 
 .auth-form .input {
     font-size: medium;
-    background-color: var(--bgt-tertiary);
+    background-color: var(--gray-100);
+}
+.auth-form .input:hover { box-shadow: 0 0 5px 2px var(--secondary-6); }
+.auth-form .input:focus { box-shadow: 0 0 5px 2px var(--primary-4); }
+.auth-form .textbox {
+    resize: none;
+    height: 150px;
+    border-radius: var(--border-radius-sm);
 }

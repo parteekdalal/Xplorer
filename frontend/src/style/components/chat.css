@@ -1,60 +1,44 @@
 /* Chat UI styles */
-.chat-ui {
-    width: min(100vw, 700px);
+#chat-ui {
+    width: min(100vw, 800px);
     min-height: 100vh;
     max-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-    background: linear-gradient(var(--primary-7), var(--secondary-7));
 }
 
 
 /* header style */
-.chat-header, .chat-input-container {
-    margin: 10px 20px;
+#chat-header, .chat-input-container {
     padding: 5px 10px;
-    position: sticky;
+    position: fixed;
+    width: min(88vw, 700px);
+    align-self: center;
 
     background-color: var(--bgt-primary);
     backdrop-filter: blur(10px);
     border: 2px solid var(--secondary-6);
     border-radius: var(--border-radius-lg);
 }
-.chat-header {
-    top: 10px;
-    display : grid;
-    grid-template-columns: 50px 50px 1fr 50px;
-    grid-template-areas: 
-        "prev pfp name options"
-        "prev pfp status options";
-    gap: 2px 10px;
-}
-.chat-header #prev-btn {
-    grid-area: prev;
-    font-size: larger;
-    background-color: var(--bgt-secondory);
-}
-.pfp {
-    grid-area: pfp;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-}
-.chat-details {
-    grid-area: status;
-    display: flex;
+#chat-header {
+    top: 0;
+    padding-top: 30px;
+    transform: translateY(-25px);
+    display : flex;
+    gap: 10px;
     align-items: center;
-    gap: 5px;
-    color: var(--gray-600);
+    justify-content: flex-start;
+    transition: all 150ms ease 200ms;
 }
-.chat-options {
-    grid-area: options;
-    display: flex;
-    align-items: center;
-}
-.chat-options .btn { background-color: transparent; }
+#chat-header:hover { transform: scale(1.05) translateY(-20px); }
+#chat-header #prev-btn { font-size: 30px; height: 40px;}
+#chat-header .chat-pfp { height: 45px; width: 45px; border-radius: 50%; }
+#chat-header #chat-details { flex: 1; }
+#chat-header #chat-options { display: flex; align-items: center; }
+#chat-header #chat-options .btn-mini { scale: 1.1; background-color: var(--bgt-primary); }
+#chat-header #chat-options .btn-mini:hover { background-color: var(--primary-6); }
 
 .chat-messages {
     flex: 1;
@@ -64,13 +48,16 @@
     justify-content: flex-start;
     overflow-y: scroll;
     gap: 10px;
-    padding: 10px;
+    padding: 80px 10px;
+    background-image: url("/chat-bg-2.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 /* Remove scrollbar-color and scrollbar-width, use these instead */
 .chat-messages::-webkit-scrollbar {
     width: 8px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
     background: transparent;
 }
@@ -84,12 +71,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    bottom: 10px;
+    
     resize: none;
     overflow-y: hidden;
-    max-height: 20vh;
-    line-height: 5vh;
-}
+    max-height: 100px;
+
+    bottom: 0;
+    padding-bottom: 30px;
+    transform: translateY(20px);
+    transition: all 200ms ease;
+} .chat-input-container:hover { transform: scale(1.05) translateY(15px); }
 
 .msg {
     padding: 8px 12px;
@@ -97,11 +88,6 @@
     max-width: 70%;
     word-wrap: break-word;
     margin-bottom: 5px;
-}
-
-.msg p {
-    margin: 0;
-    color: var(--text-primary);
 }
 .msg-out {
     background-color: var(--primary-5);
@@ -115,33 +101,17 @@
 }
 .msg-input {
     flex: 1;
-    min-height: 35px;
-    max-height: 18vh;
-    font-size: 1rem;
+    min-height: 40px;
+    max-height: 90px;
 
-    border: var(--border-light);
+    padding: 5px 10px;
+    margin: 5px 0;
+    
+    border: 2px var(--gray-200);
     border-radius: var(--border-radius);
-    background-color: inherit;
+    background-color: var(--secondary-7);
     color: var(--text-primary);
-    transition: all 0.3s ease;
 }
-.msg-input:hover {
-    border-color: var(--primary);
-}
-.msg-input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-}
-
-.btn-primary {
-    height: 45px;
-    width: 40px;
-    padding: 10px;
-    background-color: var(--primary);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-}
+.msg-input:hover { box-shadow: 0 0 5px 2px var(--secondary-6); }
+.msg-input:focus { box-shadow: 0 0 5px 2px var(--secondary-4); }
+.chat-input-container .btn { height: 40px; width: 40px; border-radius: 50%; font-size: 24px; }

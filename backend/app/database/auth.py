@@ -89,3 +89,17 @@ async def authSignup(user_info: User) -> bool:
     except Exception as e:
         logger.error(f"error occurred while signing up user {user_info.username}: {e}")
         return False
+    
+async def usernameAvailable(username: str) -> None:
+    try:
+        async with AsyncSessionLocal() as session:
+            logger.info(f"Checking for username: {username}")
+            result = await session.execute(
+                select(User).where(User.username == username)
+            )
+            is_available = result.scalar_one_or_none() is None
+            return {"availability": is_available}
+    except Exception as e:
+        logger.error(f"couldn't check availability for username - {username}: {e}")
+        return None
+    

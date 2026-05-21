@@ -1,18 +1,25 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
 import { IoMdMale, IoMdFemale, IoMdTransgender } from "react-icons/io";
 
-import { Header, PopUp } from "../components/basicComponents.jsx";
+import { Header } from "../components/basicComponents.jsx";
+import { explainError } from "../utils/utils.js";
+import { postAuth } from "../utils/auth.js";
+
+const BACKEND = import.meta.env.VITE_API;
 
 export default function Auth() {
-    const [newUser, setNewUser] = useState(true);
+    const { method = "signup" } = useParams();
+    const [newUser, setNewUser] = useState(method === "signup");
     return (
         <main id="auth">
             <Header />
             {newUser ? (
-                <h2>Welcome to <span className="txt-accent">Xplorer</span></h2>
+                <h2 className="txt headline">Welcome to Xplorer</h2>
             ) : (
-                <h2 className="txt-accent">Good to see you again</h2>
+                <h2 className="txt headline">Good to see you again</h2>
             )
             }
             {newUser ? (
@@ -31,10 +38,8 @@ function Login({ handleUserState }) {
     });
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const [popUp, setPopUp] = useState(null);
-
     const handleInputChange = (e) => {
-        const { name, value, type } = e.target;
+        const { name, value } = e.target;
         setLoginReq(prev => ({
             ...prev,
             [name]: value
@@ -44,37 +49,10 @@ function Login({ handleUserState }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
-        try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(loginReq)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("error during login: ", errorData);
-                setPopUp({
-                    status: "error",
-                    message: errorData.detail || "Login failed"
-                });
-                return;
-            }
-            const data = await response.json();
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("username", data.username);
-        } catch (err) {
-            setPopUp({
-                status: "error",
-                message: "Login failed: " + err.message
-            });
-        } finally {
-            setIsLoading(false);
-            navigate("/");
-        }
+        const response = await postAuth("login", loginReq);
+        setIsLoading(false);
+        response && navigate("/");
+        
     };
 
     return (
@@ -98,14 +76,13 @@ function Login({ handleUserState }) {
                     onChange={handleInputChange}
                     required
                 />
-                <button type="submit" className="btn btn-main" disabled={isLoading}>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
                     {isLoading ? "Loading..." : "Log in"}
                 </button>
             </form>
-            <button className="btn btn-secondary btn-big" onClick={() => handleUserState(true)}>
+            <button className="btn btn-tertiary" onClick={() => handleUserState(true)}>
                 New user?
             </button>
-            {popUp && <PopUp status={popUp.status} message={popUp.message} handleOk={setPopUp}/>}
         </div>
     )
 }
@@ -124,14 +101,12 @@ function SignUp({ handleUserState }) {
     });
     const navigate = useNavigate();
     const [step, setStep] = useState(0);
-    const incrementStep = (func, inc) => { func(prev => prev+inc) };
-    const [popUp, setPopUp] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const genders = { 
-        m: <IoMdMale style={{color: "#5555ff", "font-size":"30px"}}/>,
-        f: <IoMdFemale style={{color: "#ff5599", "font-size":"30px"}}/>,
-        o: <IoMdTransgender style={{color: "#44ff44", "font-size":"30px"}}/>
+        m: <IoMdMale style={{color: "#5555ff"}}/>,
+        f: <IoMdFemale style={{color: "#ff5599"}}/>,
+        o: <IoMdTransgender style={{color: "#44ff44"}}/>
     };
     const genderKeys = Object.keys(genders);
 
@@ -142,6 +117,13 @@ function SignUp({ handleUserState }) {
             return { ...prev, gender: genderKeys[nextIndex] };
         });
     };
+
+    const [usernameStatus, setUsernameStatus] = useState({
+        available: null,
+        checking: false,
+        error: null
+    });
+
     const handleNext = (e) => {
         e.preventDefault();
         setStep(s => s + 1);
@@ -151,42 +133,73 @@ function SignUp({ handleUserState }) {
         const { name, value } = e.target;
         setSignupReq(prev => ({
             ...prev,
-            [name]: name === "birth_year" ? parseInt(value) : value
+            [name]: name === "birth_year" ? parseInt(value) : name === "username" ? value.toLowerCase() : value
         }));
     };
+
+    const abortRef = useRef(null);
+
+    useEffect(() => {
+        const username = signupReq.username.trim();
+        if (!username || username.length < 3) {
+            setUsernameStatus({ available: null, checking: false, error: null });
+            return;
+        }
+        setUsernameStatus({ available: null, checking: true, error: null });
+
+        const timer = setTimeout(async () => {
+            abortRef.current?.abort();
+            abortRef.current = new AbortController();
+
+            try {
+                const response = await axios.get(
+                    `http://${BACKEND}/auth/username_availability/${encodeURIComponent(username)}`,
+                    { signal: abortRef.current.signal }
+                );
+                setUsernameStatus({
+                    available: response.data?.availability,
+                    checking: false,
+                    error: null
+                });
+            } catch (err) {
+                if (axios.isCancel(err)) return;
+                setUsernameStatus({
+                    available: null,
+                    checking: false,
+                    error: "Couldn't check username."
+                });
+                console.warn(`error checking for username ${username}`, err);
+            }
+        }, 400);
+
+    return () => {
+        clearTimeout(timer);
+        abortRef.current?.abort();
+    };
+}, [signupReq.username]);
+
+    const usernameMessage = usernameStatus.checking
+        ? (<p>Checking availability...</p>)
+        : usernameStatus.error
+            ? (<p className="txt-warn">{usernameStatus.error}</p>)
+            : usernameStatus.available === true
+                ? (<p className="txt-success">{signupReq.username} is available.</p>)
+                : usernameStatus.available === false
+                    ? (<p className="txt-error">{signupReq.username} is not available.</p>)
+                    : null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
-        try {
-            const response = await fetch("/api/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(signupReq)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setPopUp({ status: "error", message: errorData.detail || "Signup failed" });
-                return;
-            }
-            const data = await response.json();
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("username", data.username);
-        } catch (err) {
-            setPopUp({ status: "error", message: "Signup failed: "+err || "Signup failed" });
-        } finally {
-            setIsLoading(false);
-            navigate("/");
-        }
+        const response = await postAuth("signup", signupReq);
+        setIsLoading(false);
+        response && navigate("/");
     };
     if (step === 0){
         return (
             <div className="auth-page">
                 <form className="auth-form" onSubmit={handleNext}>
+                    {usernameMessage && usernameMessage}
                     <input 
                         type="text" 
                         name="username"
@@ -217,9 +230,11 @@ function SignUp({ handleUserState }) {
                         minLength="8"
                         required
                     />
-                    <button className="btn btn-main" type="submit">Next</button>
+                    <button className="btn btn-primary" type="submit" disabled={usernameStatus.available === false || signupReq.username.trim().length < 3}>
+                        Next
+                    </button>
                 </form>
-                <button className="btn btn-secondary" onClick={() => handleUserState(false)}>
+                <button className="btn btn-tertiary" onClick={() => handleUserState(false)}>
                     Existing user?
                 </button>
             </div>
@@ -249,27 +264,26 @@ function SignUp({ handleUserState }) {
                             max={new Date().getFullYear()}
                             required
                         />
-                        <button className="btn btn-secondary" type="button" onClick={cycleGender}>
-                            {signupReq.gender ? genders[signupReq.gender] : genders["m"]}
+                        <button className="gender-btn btn-secondary" type="button" onClick={cycleGender}>
+                            {signupReq.gender ? genders[signupReq.gender] : genders.m}
                         </button>
                     </div>
                     <textarea 
                         name="bio"
-                        className="input" 
+                        className="input textbox" 
                         placeholder="bio (optional)" 
                         value={signupReq.bio}
                         onChange={handleInputChange}
                         maxLength="255"
                     />
-                    <button type="submit" className="btn btn-main" disabled={isLoading}>
+                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
                         {isLoading ? "Loading..." : "Sign Up"}
                     </button>
-                    <button className="btn btn-secondary" onClick={() => setStep(s => s - 1)}>Back</button>
+                    <button className="btn btn-tertiary" onClick={() => setStep(s => s - 1)}>Back</button>
                 </form>
                 <button className="btn btn-secondary" onClick={() => {handleUserState(false)}}>
                     Existing user?
                 </button>
-                {popUp && <PopUp status={popUp.status} message={popUp.message} handleOk={setPopUp}/>}
             </div>
         ) 
     }

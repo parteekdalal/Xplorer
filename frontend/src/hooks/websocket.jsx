@@ -6,7 +6,7 @@ export default function useWebSocket(url) {
 
   useEffect(() => {
     ws.current = new WebSocket(url);
-    ws.current.onopen = () => { console.log("connected"); };
+    ws.current.onopen = () => { console.log("websocket connected"); };
     ws.current.onmessage = (event) => {
       try {
         const messageObj = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;

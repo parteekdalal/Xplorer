@@ -5,22 +5,18 @@ class LoginRequest(BaseModel):
     key: str = Field(..., title="username")
     password: str = Field(..., title="password")
 
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
 class SignupRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: EmailStr = Field(...)
-    password: str = Field(..., min_length=8)
-    birth_year: int = Field(...)
-    gender: str = Field(..., )
-    display_name: Optional[str] = Field(..., max_length=50, nullable=False)
-    bio: Optional[str] = Field(..., max_length=255, nullable=True)
-    interests: Optional[List] = Field(...)
-    languages: Optional[List] = Field(None)
+    email: Optional[EmailStr] = Field("")
+    password: str = Field(..., min_length=8, max_length=256)
+    birth_year: int = Field(..., gt=1900, lt=2025)
+    gender: str = Field(...)
+    display_name: Optional[str] = Field("", max_length=50)
+    bio: Optional[str] = Field("", max_length=255)
+    interests: Optional[List[str]] = Field([])
+    languages: Optional[List[str]] = Field([])
 
-class SignupResponse(BaseModel):
-    uid: int
+class AuthResponse(BaseModel):
+    token: int
     username: str
     display_name: str

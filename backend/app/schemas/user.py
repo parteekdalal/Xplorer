@@ -1,6 +1,3 @@
-"""
-GOALS
-"""
 from pydantic import BaseModel
 from typing import List
 
@@ -22,7 +19,7 @@ class UserInfoRes(BaseModel):
     bio: str
     age: int
     interests: List[str]
-    Languages: List[str]
+    languages: List[str]
 
 
 class WSMessage(BaseModel):

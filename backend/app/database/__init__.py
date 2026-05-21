@@ -6,7 +6,8 @@ from app.models import Base
 from app.core.config import settings
 from app.core.logger import logger
 
-engine = create_async_engine(settings.POSTGRES_URL, echo=False)
+postgres_url = f"postgresql+asyncpg://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
+engine = create_async_engine(postgres_url, echo=False)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 @asynccontextmanager        

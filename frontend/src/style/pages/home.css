@@ -1,55 +1,114 @@
 #home-page {
-    min-height: 100vh;
-    width: 100vw;
-    gap: 100px;
-    display: flex;
-    flex-direction: column;
+    gap: 30px;
     align-items: center;
+    justify-content: flex-start;
     background: linear-gradient(var(--base), var(--secondary-7));
 }
-#home-page h2 { transition: all 500ms ease; }
-#home-page h2:hover { color: var(--secondary-3);}
-#discover {
-    width: min(70vw, 500px);
-    height: 250px;
-    gap: 50px;
+#home-page .headline {
+    margin: 40px;
+    margin-top: 140px;
+    color: var(--primary-1);
+    transition: all 500ms ease;
+}
+#home-page .headline:hover { color: var(--secondary-3); }
+
+#xplore, #public-rooms, #welcome {
+    width: min(70vw, 600px);
+    min-width: 450px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 70px 20px 0px 0px;
-    background: linear-gradient(var(--primary-6), var(--secondary-6));
     border-radius: var(--border-radius-lg);
-    transition: all 0.3s ease;
+    transition: all 300ms ease;
+}
+#xplore {
+    min-height: 220px;
+    gap: 35px;
+    align-items: center;
+    padding: 50px 20px 0px 0px;
+    background: linear-gradient(var(--primary-7), var(--secondary-7));
 }
 
-#discover .btn {
+#xplore .btn {
     width: 200px;
     height: 75px;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: larger;
     gap: 20px;
-    transition: all 0.3s ease;
 }
+#xplore .icon { font-size: 26px; }
+#xplore .btn-primary { scale: 1.4; }
+/* #xplore .btn-tertiary { background-color: transparent;} */
 
-#discover .icon {
-    font-size: 24px;
-}
-
-#discover .btn-main {
-    scale: 1.75;
-    background-color: var(--primary-5);
-}
-
-#discover .btn:hover {
+#xplore .btn:hover {
     background-color: var(--primary-4);
-    color: var(--text-inverse);
     transform: translateY(-3px);
     box-shadow: 2px 2px 5px var(--secondary-2);
 }
-#discover:hover {
-    transform: translateY(-5px);
+#xplore:hover {
     scale: 1.01;
-    box-shadow: 2px 2px 10px 2px var(--secondary-2);
+    box-shadow: 0 0 10px 0 var(--secondary-2);
+}
+
+/* Public Rooms Section */
+#public-rooms {
+    min-height: 50px;
+    max-height: 200px;
+    gap: 5px;
+    padding: 15px;
+    background-color: var(--secondary-7);
+    overflow-y: scroll;
+}
+
+#public-rooms::-webkit-scrollbar { width: 5px; }
+
+#public-rooms::-webkit-scrollbar-track { background: transparent; }
+#public-rooms::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 20px;
+    transition: background-color 200ms ease;
+}
+#public-rooms:hover::-webkit-scrollbar-thumb { background-color: var(--secondary-6); }
+
+#public-rooms .header { position: relative; }
+#public-rooms .header .members {
+    position: absolute;
+    top: 0;
+    right: 70px;
+}
+#public-rooms .header .members, #public-rooms .room .members {
+    width: 70px;
+    color: var(--success);
+    border-radius: var(--border-radius-sm);
+}
+
+#public-rooms .options {
+    gap: 5px;
+    top: 0;
+    right: 0px;
+    position: absolute;
+    background-color: transparent;
+}
+#public-rooms .btn-mini {
+    height: 28px;
+    width: 28px;
+    background-color: var(--primary-5);
+}
+
+#public-rooms .room {
+    padding-top: 5px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px solid var(--gray-200);
+}
+#public-rooms .room .btn-mini {
+    width: 100px;
+    color: var(--secondary-4);
+    background-color: transparent;
+    font-size: larger;
+}
+#public-rooms .room .btn-mini:hover {
+    color: var(--text-primary);
+    background-color: var(--secondary-4);
 }
