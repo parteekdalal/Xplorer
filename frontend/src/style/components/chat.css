@@ -16,6 +16,7 @@
     position: fixed;
     width: min(88vw, 700px);
     align-self: center;
+    z-index: 100;
 
     background-color: var(--bgt-primary);
     backdrop-filter: blur(10px);
@@ -30,9 +31,9 @@
     gap: 10px;
     align-items: center;
     justify-content: flex-start;
-    transition: all 150ms ease 200ms;
-}
-#chat-header:hover { transform: scale(1.05) translateY(-20px); }
+    transition: all 150ms ease 100ms;
+} #chat-header:hover { transform: scale(1.05) translateY(-20px); }
+
 #chat-header #prev-btn { font-size: 30px; height: 40px;}
 #chat-header .chat-pfp { height: 45px; width: 45px; border-radius: 50%; }
 #chat-header #chat-details { flex: 1; }
@@ -47,8 +48,8 @@
     flex-direction: column;
     justify-content: flex-start;
     overflow-y: scroll;
-    gap: 10px;
-    padding: 80px 10px;
+    gap: 5px;
+    padding: 100px 10px;
     background-image: url("/chat-bg-2.jpg");
     background-size: cover;
     background-position: center;
@@ -87,7 +88,7 @@
     border-radius: var(--border-radius);
     max-width: 70%;
     word-wrap: break-word;
-    margin-bottom: 5px;
+    position: relative;
 }
 .msg-out {
     background-color: var(--primary-5);
@@ -98,6 +99,11 @@
     background-color: var(--gray-200);
     color: var(--text-primary);
     align-self: flex-start;
+}
+.msg-announcement {
+    align-self: center;
+    background-color: var(--bgt-primary);
+    backdrop-filter: blur(5px);
 }
 .msg-input {
     flex: 1;

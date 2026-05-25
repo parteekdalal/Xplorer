@@ -12,7 +12,7 @@ export default function useWebSocket(url) {
         const messageObj = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
         setMessages((prev) => [...prev, messageObj]);
       } catch (e) {
-        setMessages((prev) => [...prev, { sender: "_", message: event.data }]);
+        setMessages((prev) => [...prev, { sender: "a", message: event.data }]);
       }
     };
     return () => ws.current.close();

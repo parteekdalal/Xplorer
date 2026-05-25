@@ -1,14 +1,14 @@
 import axios from "axios";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowBack, IoMdAttach } from "react-icons/io";
 import { SlOptionsVertical } from "react-icons/sl";
-import { IoMdAttach} from "react-icons/io";
 import { IoSend } from "react-icons/io5";
 
-import { getToken } from "../utils/auth";
-import useWebSocket from '../hooks/websocket';
+import { ProfileMini } from "../components/Profile.jsx";
+import { getToken } from "../utils/auth.js";
+import useWebSocket from '../hooks/websocket.jsx';
 
 const BACKEND = import.meta.env.VITE_API;
 const sender = localStorage.getItem("username");
@@ -29,15 +29,11 @@ export default function ChatUI() {
         }
     }, [messageContent.message, send]);
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && e.ctrlKey) { handleSendMessage(); }
+        else if (e.key === "Escape") { navigate("/"); }
+    };
     useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (e.key === 'Enter' && e.ctrlKey) {
-                handleSendMessage();
-            }
-            else if (e.key === "Escape") {
-                navigate("/");
-            }
-        };
         document.addEventListener('keydown', handleKeyPress);
         return () => { document.removeEventListener('keydown', handleKeyPress); };
     }, [handleSendMessage, navigate]);
@@ -50,6 +46,7 @@ export default function ChatUI() {
                 value={messageContent.message}
                 onChange={setInputMessage}
                 onSend={handleSendMessage}
+                onKeyPress={handleKeyPress}
             />
         </div>
     )
@@ -80,7 +77,7 @@ function ChatHeader({ roomId }) {
             <button id="prev-btn" className="btn btn-tertiary" onClick={() => { navigate("/"); }}>
                 <IoIosArrowBack />
             </button>
-            <img src="/Xplorer.png" className="chat-pfp" />
+            {/* <img src="/Xplorer.png" className="chat-pfp" /> */}
 
             <div id="chat-details">
                 <h3 className="txt">Chat Room</h3>
@@ -102,29 +99,56 @@ function ChatMessages({ messages }) {
                 <Message
                     key={index}
                     message={message}
-                    io={message.sender === sender ? "msg-out" : "msg-in"}
                 />
             ))}
         </div>
     )
 }
 
-function Message({ message, io }) {
-    return (
-        <div className={`msg ${io}`}>
-            <button className="btn btn-tertiary">{message.sender}</button>
-            <p className="text-primary">{message.message}</p>
-        </div>
-    )
+function Message({ message }) {
+    const [profile, setProfile] = useState(null);
+    function handleClick() {
+        setProfile({
+            positions: {
+                position: "absolute",
+                top: "5px",
+                left: "10px"
+            }
+        })
+    };
+
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (e.key === "Backspace") { setProfile(null);}
+        };
+        document.addEventListener('keydown', handleKeyPress);
+        return () => { document.removeEventListener('keydown', handleKeyPress); };
+    }, [profile]);
+    if (message.sender === "a") {
+        return (
+            <div className={"msg msg-announcement"}>
+                <p className="txt-secondary">{message.message}</p>
+            </div>
+        )
+    } else if (message.sender === sender) {
+        return (
+            <div className={"msg msg-out"}>
+                <p>{message.message}</p>
+            </div>
+        )
+    } else {
+        return (
+            <div className={"msg msg-in"}>
+                <button className="btn btn-tertiary txt-secondary" onClick={handleClick}>{message.sender}</button>
+                <p>{message.message}</p>
+                {profile && <ProfileMini username={message.sender} positions={profile.positions} handleExit={() => {setProfile(null)}}/>}
+            </div>
+            
+        )
+    }
 }
 
 function ChatInput({ value, onChange, onSend, onKeyPress }) {
-    const handleInput = (e) => {
-        onChange(prev => ({ ...prev, message: e.target.value }))
-        e.target.style.height = "0px";
-        e.target.style.height = e.target.scrollHeight + "px";
-    }
-
     const textareaRef = useRef(null)
 
     useEffect(() => {
@@ -133,8 +157,6 @@ function ChatInput({ value, onChange, onSend, onKeyPress }) {
         el.style.height = "40px";
         el.style.height = el.scrollHeight + "px";
     }, [value])
-
-
 
     return (
         <div className="chat-input-container">

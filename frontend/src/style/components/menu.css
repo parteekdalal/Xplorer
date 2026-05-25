@@ -19,13 +19,13 @@
     transition: all 0.5s ease-in-out;
 }
 
-.menu-overlay {
+.overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
     transition: all 0.5s ease-in-out;
-    pointer-events: all; /* block everything behind it */
+    pointer-events: all;
     z-index: 999;
 }
 
