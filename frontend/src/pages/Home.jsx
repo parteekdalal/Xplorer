@@ -67,7 +67,7 @@ function Xplore() {
 }
 
 function PublicRooms({ token }) {
-    const [rooms, setRooms] = useState(null);
+    const [rooms, setRooms] = useState([]);
 
     const navigate = useNavigate();
     const createRoom = () => {
@@ -75,7 +75,7 @@ function PublicRooms({ token }) {
         sessionStorage.setItem("ws_url", `ws://${BACKEND}/public/${roomId}?token=${token}`);
         navigate(`/chat/${roomId}`);
     };
-    useEffect(() => { getRooms(setRooms); }, []);
+    useEffect(() => { getRooms(setRooms) }, []);
     return (
         <div id="public-rooms">
             <div className="header">

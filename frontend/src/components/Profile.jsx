@@ -33,7 +33,7 @@ export function ProfileMini({ username, positions, handleExit }) {
 
     return (
         <>
-        <div id="profile-mini" style={positions}>
+        <div id="profile-mini">
             <div id="profile-header">
                 {/* <img src="/Xplorer.png" alt="profile pic" className='pfp'/> */}
                 <div className="txt-span header-section container-v">

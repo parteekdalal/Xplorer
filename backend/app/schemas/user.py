@@ -23,5 +23,6 @@ class UserInfoRes(BaseModel):
 
 
 class WSMessage(BaseModel):
-    sender: str
-    message: str
+    content: str
+    sender: str = "a"
+    content_type: str = "message"
