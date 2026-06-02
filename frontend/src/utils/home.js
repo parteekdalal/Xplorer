@@ -18,11 +18,11 @@ export async function handleXplore(setStatus, navigate) {
         const data = response.data;
         if (data.status === false) {
             toast.error(data.message);
-            console.info(data.message);
+            console.warn(data.message);
             return;
         }
         sessionStorage.setItem("ws_url", `ws://${BACKEND}/chat/${data.room_id}?token=${token}`);
-        navigate(`/chat/${data.room_id}`);
+        navigate(`/chat/xplore/${data.room_id}`);
     } catch (err) {
         console.error("error",err);
     } finally { setStatus(""); };
@@ -34,8 +34,9 @@ export async function getRooms(setRooms) {
     try {
         const response = await axios.get(`http://${BACKEND}/public/rooms`);
         setRooms(response.data);
-        console.log('Fetched public rooms.')
+        console.log('fetched public rooms.')
     } catch (err) {
-        console.error(err)
+        console.error(err);
+        toast.error(err.message);
     }
 };

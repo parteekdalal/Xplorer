@@ -7,7 +7,6 @@ import { FaSearch, FaToolbox, FaPlus } from 'react-icons/fa';
 import { IoEnter } from "react-icons/io5";
 
 import { Header } from '../components/basicComponents.jsx';
-import ChatUI from '../components/chat.jsx';
 
 import { getToken } from "../utils/auth.js";
 import { handleXplore, getRooms } from "../utils/home.js";
@@ -67,15 +66,15 @@ function Xplore() {
 }
 
 function PublicRooms({ token }) {
-    const [rooms, setRooms] = useState(null);
+    const [rooms, setRooms] = useState([]);
 
     const navigate = useNavigate();
     const createRoom = () => {
         const roomId = Math.floor(Math.random() * 90000) + 10000;
         sessionStorage.setItem("ws_url", `ws://${BACKEND}/public/${roomId}?token=${token}`);
-        navigate(`/chat/${roomId}`);
+        navigate(`/chat/public/${roomId}`);
     };
-    useEffect(() => { getRooms(setRooms); }, []);
+    useEffect(() => { getRooms(setRooms) }, []);
     return (
         <div id="public-rooms">
             <div className="header">
@@ -94,7 +93,7 @@ function RoomCard({ roomInfo, token}){
     const navigate = useNavigate();
     const handleJoin = () => {
         sessionStorage.setItem("ws_url", `ws://${BACKEND}/public/${roomInfo.room_id}?token=${token}`);
-        navigate(`/chat/${roomInfo.room_id}`);
+        navigate(`/chat/public/${roomInfo.room_id}`);
     };
     return (
         <div className="room">

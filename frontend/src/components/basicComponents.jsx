@@ -35,15 +35,6 @@ export function Header() {
     )
 }
 
-export function Loading() {
-    return (
-        <div className="loading-container">
-            <div className="spinner spinner1"></div>
-            <div className="spinner spinner2"></div>
-        </div>
-    )
-}
-
 export function Menu() {
     const navigate = useNavigate();
     return (
@@ -67,7 +58,7 @@ export function Menu() {
                     </button>
                 </section>
             </div>
-            { createPortal(<div className="menu-overlay" />, document.body ) }
+            { createPortal(<div className="overlay" />, document.body ) }
         </>
     )
 }
