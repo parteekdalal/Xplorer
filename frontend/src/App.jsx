@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 
 import Home from "./pages/Home.jsx";
 import Auth from "./pages/Auth.jsx";
-import Chat from "./components/chat.jsx";
+import Chat from "./pages/Chat.jsx";
 
 export default function App() {
   return (
@@ -11,7 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth/:method?" element={<Auth />} />
-        <Route path="/chat/:roomId" element={<Chat />} />
+        <Route path="/chat/:type/:roomId" element={<Chat />} />
       </Routes>
       <ToastContainer
         style={{ top: "100px" }}

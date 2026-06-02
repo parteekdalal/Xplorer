@@ -7,35 +7,11 @@
     background-repeat: no-repeat;
 }
 
-/* Chat Sidebar */
-#chat-sidebar {
-    flex: 1;
-    height: 92vh;
-    padding: 20px 10px;
-    margin-left: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: var(--secondary-6);
-    border: 3px solid var(--secondary-5);
-    border-radius: var(--border-radius);
-}
-#chat-sidebar .container-v{ flex: 1; gap: 5px; }
-#chat-sidebar .member{
-    height: 30px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    
-    font-size: larger;
-    font-weight: bold;
-    background: linear-gradient(to right, var(--bgt-primary), transparent);
-    border-radius: var(--border-radius);
-}
+/* Chat Sidebar style is defined in `./components/chat-sidebar.css` */
 
 /* Chat UI styles */
 #chat-ui {
-    width: 70vw;
+    flex: 1;
     min-height: 100vh;
     max-height: 100vh;
     position: relative;
@@ -60,15 +36,14 @@
     border-radius: var(--border-radius-lg);
 }
 #chat-header {
-    top: 0;
+    top: -24px;
     padding-top: 30px;
-    transform: translateY(-25px);
-    display : flex;
+    display: flex;
     gap: 10px;
     align-items: center;
     justify-content: flex-start;
     transition: all 150ms ease 100ms;
-} #chat-header:hover { transform: scale(1.05) translateY(-20px); border-color: var(--secondary-5); }
+} #chat-header:hover { transform: scale(1.05) translateY(2px); border-color: var(--secondary-5); }
 
 #chat-header #prev-btn { font-size: 30px; height: 40px;}
 #chat-header #header-details { flex: 1; }
@@ -86,16 +61,9 @@
     padding: 100px 10px;
 }
 /* Remove scrollbar-color and scrollbar-width, use these instead */
-.chat-messages::-webkit-scrollbar {
-    width: 8px;
-}
-.chat-messages::-webkit-scrollbar-track {
-    background: transparent;
-}
-.chat-messages::-webkit-scrollbar-thumb {
-    background: var(--secondary-6);
-    border-radius: 20px;
-}
+.chat-messages::-webkit-scrollbar { width: 8px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--secondary-6); border-radius: 20px; }
 #down-btn {
     font-size: 50px;
     position: absolute;
@@ -113,11 +81,10 @@
     overflow-y: hidden;
     max-height: 100px;
 
-    bottom: 0;
+    bottom: -24px;
     padding-bottom: 30px;
-    transform: translateY(20px);
     transition: all 200ms ease;
-} #chat-input-container:hover { transform: scale(1.05) translateY(15px); }
+} #chat-input-container:hover { transform: scale(1.05) translateY(-2px); }
 
 .msg {
     padding: 5px 10px;

@@ -6,8 +6,10 @@ import { IoIosArrowBack, IoIosArrowDropdownCircle } from "react-icons/io";
 import { SlOptionsVertical } from "react-icons/sl";
 import { IoSend } from "react-icons/io5";
 
+
 import { ProfileMini } from "../components/Profile.jsx";
 import { getToken } from "../utils/auth.js";
+import Sidebar from "../components/ChatSidebar.jsx";
 import useWebSocket from '../hooks/websocket.jsx';
 
 const BACKEND = import.meta.env.VITE_API;
@@ -15,30 +17,25 @@ const sender = localStorage.getItem("username");
 
 export default function Chat() {
     const token = getToken();
-    const { roomId } = useParams();
+    const { type, roomId } = useParams();
     const ws_url = sessionStorage.getItem("ws_url");
 
     const { messages, members = [], send } = useWebSocket(ws_url);
-
-    return (
-        <div id="chat-page" className="container-h">
-            <ChatSidebar members={members} />
-            <ChatUI roomId={roomId} messages={messages} send={send}/>
-        </div>
-    )
-}
-
-function ChatSidebar({ members }) {
-    return (
-        <div id="chat-sidebar">
-            <h2>active</h2>
-            <div className="container-v">
-                {members.map((member, key) => (
-                    <div key={key} className="member">{member}</div>
-                ))}
+    if (type === "xplore") {
+        return (
+            <div id="chat-page" className="container-h">
+                <Sidebar members={members} sections="basic"/>
+                <ChatUI roomId={roomId} messages={messages} send={send}/>
             </div>
-        </div>
-    )
+        )
+    } else if (type === "public") {
+        return (
+            <div id="chat-page" className="container-h">
+                <Sidebar members={members} type="public"/>
+                <ChatUI roomId={roomId} messages={messages} send={send}/>
+            </div>
+        )
+    }
 }
 
 function ChatUI({roomId, messages, send}) {
@@ -137,11 +134,12 @@ function Message({ message }) {
     const [showProfile, setShowProfile] = useState(false);
     useEffect(() => {
         const handleKeyPress = (e) => {
-            if (e.key === "Backspace") { setShowProfile(null);}
+            if (e.key === "Backspace") { setShowProfile(false);}
         };
         document.addEventListener('keydown', handleKeyPress);
         return () => { document.removeEventListener('keydown', handleKeyPress); };
     }, [showProfile]);
+
     if (message.sender === "a") {
         return (
             <div className={"msg msg-announcement"}>
@@ -159,7 +157,7 @@ function Message({ message }) {
             <div className={"msg msg-in"}>
                 <button className="btn btn-tertiary txt-secondary" onClick={() => {setShowProfile(true)}}>{message.sender}</button>
                 <p>{message.content}</p>
-                {showProfile && <ProfileMini username={message.sender} handleExit={() => {setShowProfile(null)}}/>}
+                {showProfile && <ProfileMini username={message.sender} handleExit={() => setShowProfile(false)}/>}
             </div>
             
         )

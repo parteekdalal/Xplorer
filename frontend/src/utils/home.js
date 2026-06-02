@@ -22,7 +22,7 @@ export async function handleXplore(setStatus, navigate) {
             return;
         }
         sessionStorage.setItem("ws_url", `ws://${BACKEND}/chat/${data.room_id}?token=${token}`);
-        navigate(`/chat/${data.room_id}`);
+        navigate(`/chat/xplore/${data.room_id}`);
     } catch (err) {
         console.error("error",err);
     } finally { setStatus(""); };
