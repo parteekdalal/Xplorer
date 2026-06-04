@@ -4,6 +4,13 @@ import { toast } from "react-toastify";
 
 const BACKEND = import.meta.env.VITE_API;
 
+export function isValidUsername(username) {
+  const value = username?.trim() ?? "";
+  if (!/^[A-Za-z]/.test(value)) return false;
+  if (!/[A-Za-z]/.test(value)) return false;
+  return /^[A-Za-z0-9_]+$/.test(value);
+}
+
 export function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));

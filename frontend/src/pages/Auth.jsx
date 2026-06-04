@@ -6,7 +6,7 @@ import { IoMdMale, IoMdFemale, IoMdTransgender } from "react-icons/io";
 
 import { Header } from "../components/basicComponents.jsx";
 import { explainError } from "../utils/utils.js";
-import { postAuth } from "../utils/auth.js";
+import { isValidUsername, postAuth } from "../utils/auth.js";
 
 const BACKEND = import.meta.env.VITE_API;
 
@@ -143,10 +143,21 @@ function SignUp({ handleUserState }) {
 
     useEffect(() => {
         const username = signupReq.username.trim();
+
         if (!username || username.length < 3) {
             setUsernameStatus({ available: null, checking: false, error: null });
             return;
         }
+
+        if (!isValidUsername(username)) {
+            setUsernameStatus({
+                available: null,
+                checking: false,
+                error: "Username must start with a letter and contain only letters, numbers, or underscores."
+            });
+            return;
+        }
+
         setUsernameStatus({ available: null, checking: true, error: null });
 
         const timer = setTimeout(async () => {
@@ -170,7 +181,7 @@ function SignUp({ handleUserState }) {
                     checking: false,
                     error: "Couldn't check username."
                 });
-                console.warn(`error checking for username ${username}`, err);
+                console.warn(`error checking for username ${username}:`, err);
             }
         }, 400);
 

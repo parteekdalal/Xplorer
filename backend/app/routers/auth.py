@@ -58,4 +58,5 @@ async def signup(req: SignupRequest):
     
 @router.get("/check_username/{username}")
 async def check_username(username: str):
-    return await checkUsername(username=username)
+    availability = await checkUsername(username=username)
+    return 
