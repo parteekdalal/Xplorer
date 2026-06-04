@@ -37,7 +37,7 @@
     background-color: var(--bgt-primary);
     border-radius: var(--border-radius);
 }
-.auth-form .container { width: 240px; }
+.auth-form .container { width: 240px; gap: 5px;}
 .auth-form .container .input { flex: 0.7; }
 .auth-form .gender-btn {
     flex: 0.3;

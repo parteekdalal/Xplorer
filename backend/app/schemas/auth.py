@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 from typing import Optional, List
 
 class LoginRequest(BaseModel):
@@ -7,7 +7,7 @@ class LoginRequest(BaseModel):
 
 class SignupRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: Optional[EmailStr] = Field("")
+    email: Optional[str] = Field("")
     password: str = Field(..., min_length=8, max_length=256)
     birth_year: int = Field(..., gt=1900, lt=2025)
     gender: str = Field(...)
@@ -15,8 +15,3 @@ class SignupRequest(BaseModel):
     bio: Optional[str] = Field("", max_length=255)
     interests: Optional[List[str]] = Field([])
     languages: Optional[List[str]] = Field([])
-
-class AuthResponse(BaseModel):
-    token: int
-    username: str
-    display_name: str

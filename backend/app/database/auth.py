@@ -90,7 +90,7 @@ async def authSignup(user_info: User) -> bool:
         logger.error(f"error occurred while signing up user {user_info.username}: {e}")
         return False
     
-async def usernameAvailable(username: str) -> None:
+async def checkUsername(username: str) -> None:
     try:
         async with AsyncSessionLocal() as session:
             logger.info(f"Checking for username: {username}")

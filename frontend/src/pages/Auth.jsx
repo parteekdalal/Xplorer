@@ -133,7 +133,9 @@ function SignUp({ handleUserState }) {
         const { name, value } = e.target;
         setSignupReq(prev => ({
             ...prev,
-            [name]: name === "birth_year" ? parseInt(value) : name === "username" ? value.toLowerCase() : value
+            [name]: name === "birth_year" ? parseInt(value)
+            : name === "username" ? value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase()
+            : value
         }));
     };
 
@@ -153,7 +155,7 @@ function SignUp({ handleUserState }) {
 
             try {
                 const response = await axios.get(
-                    `http://${BACKEND}/auth/username_availability/${encodeURIComponent(username)}`,
+                    `http://${BACKEND}/auth/check_username/${encodeURIComponent(username)}`,
                     { signal: abortRef.current.signal }
                 );
                 setUsernameStatus({
@@ -212,15 +214,6 @@ function SignUp({ handleUserState }) {
                         required
                     />
                     <input 
-                        type="email" 
-                        name="email"
-                        className="input" 
-                        placeholder="email" 
-                        value={signupReq.email}
-                        onChange={handleInputChange}
-                        required
-                    />
-                    <input 
                         type="password" 
                         name="password"
                         className="input" 
@@ -229,6 +222,14 @@ function SignUp({ handleUserState }) {
                         onChange={handleInputChange}
                         minLength="8"
                         required
+                    />
+                    <input 
+                        type="email" 
+                        name="email"
+                        className="input" 
+                        placeholder="email (optional)"
+                        value={signupReq.email}
+                        onChange={handleInputChange}
                     />
                     <button className="btn btn-primary" type="submit" disabled={usernameStatus.available === false || signupReq.username.trim().length < 3}>
                         Next
@@ -261,7 +262,7 @@ function SignUp({ handleUserState }) {
                             value={signupReq.birth_year}
                             onChange={handleInputChange}
                             min="1900"
-                            max={new Date().getFullYear()}
+                            max={new Date().getFullYear() - 10}
                             required
                         />
                         <button className="gender-btn btn-secondary" type="button" onClick={cycleGender}>
