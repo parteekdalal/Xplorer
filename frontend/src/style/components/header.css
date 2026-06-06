@@ -1,23 +1,22 @@
-#header {
-    height: 50px;
+#page-header {
+    height: 70px;
     width: 100vw;
-    padding: 10px;
-    position: fixed;
+    position: sticky;
     top: 0px;
-    left: 0px;
-    z-index: 10000;
+    align-self: center;
+    z-index: 999;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+    backdrop-filter: blur(4px);
     border-bottom: 2px solid var(--secondary-5);
     background: linear-gradient(to right, var(--bgt-primary), var(--secondary-7));
     box-shadow: 0 2px 20px var(--primary-4);
 }
+#page-header .logo { height: 40px; }
 
-#header .logo { height: 45px; }
-
-.header-right {
+#page-header .header-right {
     margin-right: 30px;
     display: flex;
     align-items: center;
@@ -27,5 +26,5 @@
     border: 2px solid var(--primary-4);
     border-radius: var(--border-radius);
 }
-.header-right .btn-mini { scale: 1.2; }
-.header-right .btn-mini:hover { background-color: var(--secondary-6); }
+#page-header .header-right .btn-mini { scale: 1.2; }
+#page-header .header-right .btn-mini:hover { background-color: var(--secondary-6); }

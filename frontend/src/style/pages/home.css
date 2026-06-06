@@ -1,16 +1,15 @@
 #home-page {
     gap: 30px;
+    position: relative;
     align-items: center;
     justify-content: flex-start;
     background: linear-gradient(var(--base), var(--secondary-7));
 }
 #home-page .headline {
     margin: 40px;
-    margin-top: 140px;
     color: var(--primary-1);
-    transition: all 500ms ease;
-}
-#home-page .headline:hover { color: var(--secondary-3); }
+    transition: all 200ms ease;
+} #home-page .headline:hover { color: var(--secondary-1); }
 
 #xplore, #public-rooms, #welcome {
     width: min(70vw, 600px);

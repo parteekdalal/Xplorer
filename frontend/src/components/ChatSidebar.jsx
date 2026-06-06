@@ -25,7 +25,7 @@ function Header() {
         <div className="section container-v">
             <div className="background" />
             <h3 id="title" className="txt-secondary">Room title</h3>
-            <div id="body" className="txt-span">
+            <div id="body">
                 <p id="description">Sidebar sections are under development...</p>
             </div>
         </div>
@@ -45,7 +45,7 @@ function ActiveMembers({ members }) {
         <div id="active-members" className="section container-v">
             <div className="background" />
             <h3 id="title">in the room</h3>
-            <p id="info-bubble">{members?.length || 0}</p>
+            <p id="info-bubble">{members?.length || 0} active</p>
             <div className="container-v">
                 {members.map((member, key) => (
                     <div key={key} onClick={() => setOpenProfile(member)} className="member">
@@ -59,10 +59,10 @@ function ActiveMembers({ members }) {
 }
 
 function Options() {
+    // work in progress
     return (
         <div className="section container-v">
             <div className="background" />
-            {/* action buttons */}
         </div>
     )
 }

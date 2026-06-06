@@ -4,7 +4,7 @@
     min-height: 100px;
     padding: 10px;
     z-index: 500;
-    gap: 20px;
+    gap: 15px;
 
     display: flex;
     flex-direction: column;
@@ -23,13 +23,14 @@
 .menu-tl { top: 80px; left: 10px;  }
 
 .menu-section {
-    width: 230px;
+    position: relative;
+    width: 94%;
     flex-wrap: wrap;
     display: flex;
     flex-direction: column;
-    gap:10px;
-    border-radius: var(--border-radius-lg);
+    gap: 5px;
 }
+
 .menu-section .btn {
     height: 40px;
     padding-left: 20px;
@@ -37,8 +38,5 @@
     gap: 20px;
     
     background-color: var(--bgt-primary);
-    transition: all 0.1s ease;
-}
-.menu-section .btn:hover {
-    background-color: var(--secondary-6);
-}
+    transition: all 100ms ease;
+} .menu-section .btn:hover { background-color: var(--secondary-6); }

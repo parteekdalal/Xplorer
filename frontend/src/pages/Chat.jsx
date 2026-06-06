@@ -114,21 +114,33 @@ function ChatHeader({ roomId }) {
 
 function ChatMessages({ messages }) {
     const messagesEndRef = useRef(null);
-    const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }) };
+    const containerRef = useRef(null);
+    const [atBottom, setAtBottom] = useState(true);
+
+    const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     useEffect(scrollToBottom, [messages]);
+
+    const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+        setAtBottom(scrollHeight - scrollTop - clientHeight < 10);
+    };
+
     return (
-        <div className="chat-messages">
+        <div className="chat-messages" ref={containerRef} onScroll={handleScroll}>
             {messages.map((message, index) => (
                 <Message key={index} message={message} />
             ))}
 
             <div ref={messagesEndRef} />
-            <button id="down-btn" className="btn btn-tertiary" onClick={scrollToBottom}>
-                <IoIosArrowDropdownCircle />
-            </button>
+            {!atBottom && (
+                <button id="down-btn" className="btn btn-tertiary" onClick={scrollToBottom}>
+                    <IoIosArrowDropdownCircle />
+                </button>
+            )}
         </div>
-    )
+    );
 }
+
 
 function Message({ message }) {
     const [showProfile, setShowProfile] = useState(false);
