@@ -11,7 +11,8 @@
     transition: all 200ms ease;
 } #home-page .headline:hover { color: var(--secondary-1); }
 
-#xplore, #public-rooms, #welcome {
+/* home page section */
+#home-page .home-section {
     width: min(70vw, 600px);
     min-width: 450px;
     display: flex;
@@ -19,7 +20,7 @@
     border-radius: var(--border-radius-lg);
     transition: all 300ms ease;
 }
-#xplore {
+#home-page .main-section {
     min-height: 220px;
     gap: 35px;
     align-items: center;
@@ -27,22 +28,21 @@
     background: linear-gradient(var(--primary-7), var(--secondary-7));
 }
 
-#xplore .btn {
+#home-page .main-section .btn {
     width: 200px;
     height: 75px;
     font-size: larger;
     gap: 20px;
 }
-#xplore .icon { font-size: 26px; }
-#xplore .btn-primary { scale: 1.4; }
-/* #xplore .btn-tertiary { background-color: transparent;} */
+#home-page .main-section .icon { font-size: 26px; }
+#home-page .main-section .btn-primary { scale: 1.4; }
 
-#xplore .btn:hover {
+#home-page .main-section .btn:hover {
     background-color: var(--primary-4);
     transform: translateY(-3px);
     box-shadow: 2px 2px 5px var(--secondary-2);
 }
-#xplore:hover {
+#home-page .main-section:hover {
     scale: 1.01;
     box-shadow: 0 0 10px 0 var(--secondary-2);
 }
@@ -58,14 +58,12 @@
 }
 
 #public-rooms::-webkit-scrollbar { width: 5px; }
-
 #public-rooms::-webkit-scrollbar-track { background: transparent; }
 #public-rooms::-webkit-scrollbar-thumb {
-    background-color: transparent;
+    background-color: var(--secondary-6);
     border-radius: 20px;
     transition: background-color 200ms ease;
 }
-#public-rooms:hover::-webkit-scrollbar-thumb { background-color: var(--secondary-6); }
 
 #public-rooms .header { position: relative; }
 #public-rooms .header .members {
