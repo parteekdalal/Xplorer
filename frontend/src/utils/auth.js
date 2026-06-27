@@ -25,7 +25,7 @@ export function getToken() {
   if (!token) return null;
   if (isTokenExpired(token)) {
     console.warn("access token expired");
-    clearToken();
+    localStorage.removeItem("access_token");
     return null;
   }
   return token;

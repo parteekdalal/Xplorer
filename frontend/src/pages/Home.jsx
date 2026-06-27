@@ -27,11 +27,11 @@ export default function Home() {
         )
     } else { 
         return (
-            <div id="home-page">
+            <main id="home-page">
                 <Header />
                 <h2 className="txt headline">Find people like you...</h2>
                 <Welcome />
-            </div>
+            </main>
         )
     }
 }
@@ -39,11 +39,11 @@ export default function Home() {
 function Welcome() {
     const navigate = useNavigate();
     return (
-        <div id="xplore">
-            <button className="btn btn-main" onClick={() => { navigate("/auth/login"); }}>
+        <div id="welcome" className="home-section main-section">
+            <button className="btn btn-primary" onClick={() => { navigate("/auth/login"); }}>
                 Log in
             </button>
-            <button className="btn btn-secondary" onClick={() => { navigate("/auth/signup"); }}>
+            <button className="btn btn-tertiary" onClick={() => { navigate("/auth/signup"); }}>
                 I'm new
             </button>
         </div>
@@ -54,7 +54,7 @@ function Xplore() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState("");
     return (
-        <div id="xplore">
+        <div id="xplore" className="home-section main-section">
             <button className="btn btn-primary" onClick={() => { handleXplore(setLoading, navigate); }}>
                 <FaSearch className={`icon ${loading}`}/> {loading || "Xplore"}
             </button>
@@ -76,7 +76,7 @@ function PublicRooms({ token }) {
     };
     useEffect(() => { getRooms(setRooms) }, []);
     return (
-        <div id="public-rooms">
+        <div id="public-rooms" className="home-section">
             <div className="header">
                 <h2 className="txt">Public Rooms</h2>
                 <h5 className="txt-span members">{rooms?.length} active</h5>
