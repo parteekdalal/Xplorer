@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app.database.auth import authLogin, authSignup, create_access_token, checkUsername
+from app.database.auth import authLogin, authSignup, guestLogin, create_access_token, checkUsername
 from app.models import User
 from app.schemas.auth import SignupRequest, LoginRequest
 
@@ -12,16 +12,7 @@ async def login(req: LoginRequest):
     login_res = await authLogin(key=req.key, password=req.password)
     if not login_res['status']:
         raise HTTPException(status_code=login_res['status_code'], detail=login_res['message'])
-    token = create_access_token({
-        "uid": str(login_res["uid"]),
-        "username": login_res["username"]
-    })
-    return {
-        "status": True,
-        "status_code": 200,
-        "access_token": token,
-        "username": login_res["username"]
-        }
+    return login_res
     
 @router.post('/signup')
 async def signup(req: SignupRequest):
@@ -38,25 +29,17 @@ async def signup(req: SignupRequest):
     )
     signup_res: bool = await authSignup(user_info)
     if signup_res:
-        login_res = await authLogin(key=req.username,
-                              password=req.password)
-        if login_res["status"]:
-
-            token = create_access_token({
-                "uid": str(login_res["uid"]),
-                "username": login_res["username"]
-            })
-            return {
-                "status": True,
-                "status_code": 200,
-                "message": "welcome to wanderhead",
-                "access_token": token,
-                "username": login_res["username"]
-            }
+        login_res = await authLogin(key=req.username, password=req.password)
+        if login_res["status"]: return login_res
     else:
         raise HTTPException(status_code= 400, detail= "signup failed")
+    
+@router.post("/guest")
+def guest():
+    return guestLogin()
     
 @router.get("/check_username/{username}")
 async def check_username(username: str):
     availability = await checkUsername(username=username)
-    return 
+    if availability == -1: HTTPException(status_code=404, detail=f"could not check for the username: {username}")
+    return availability

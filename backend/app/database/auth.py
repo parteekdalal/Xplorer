@@ -1,9 +1,11 @@
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+import uuid
 from sqlalchemy import select
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from app.models.users import User
 from app.database import AsyncSessionLocal
 from app.core.config import settings
@@ -19,9 +21,9 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 # ── Token utils ──────────────────────────────────────────
-def create_access_token(data: dict):
+def create_access_token(data: dict, temp: bool = False):
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=1440 if temp else settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
@@ -63,11 +65,14 @@ async def authLogin(key: str, password: str):
                     "status_code": 401,
                     "message": f"wrong password for {user.username}"
                 }
+            token = create_access_token({
+                "uid": str(user.uid),
+                "username": user.username
+            })
             return {
                 "status": True,
                 "status_code": 200,
-                "message": f"welcome back",
-                "uid": user.id,
+                "access_token": token,
                 "username": user.username
             }
     except Exception as e:
@@ -89,7 +94,18 @@ async def authSignup(user_info: User) -> bool:
     except Exception as e:
         logger.error(f"error occurred while signing up user {user_info.username}: {e}")
         return False
-
+    
+def guestLogin() -> dict:
+    username = f"guest_{uuid.uuid4().hex[:8]}"
+    token = create_access_token({
+        "uid": -1, "username": username
+    }, temp=True)
+    return {
+        "status": True,
+        "status_code": 200,
+        "username": username,
+        "access_token": token
+    }
 
 async def checkUsername(username: str) -> int:
     try:
@@ -103,4 +119,3 @@ async def checkUsername(username: str) -> int:
     except Exception as e:
         logger.error(f"couldn't check availability for username - {username}: {e}")
         return -1
-    
