@@ -63,6 +63,7 @@ function Login({ handleUserState }) {
                     name="key"
                     className="input" 
                     placeholder="username" 
+                    autoComplete="username"
                     value={loginReq.key}
                     onChange={handleInputChange}
                     required
@@ -72,6 +73,7 @@ function Login({ handleUserState }) {
                     name="password"
                     className="input" 
                     placeholder="password" 
+                    autoComplete="current-password"
                     value={loginReq.password}
                     onChange={handleInputChange}
                     required
@@ -142,13 +144,12 @@ function SignUp({ handleUserState }) {
     const abortRef = useRef(null);
 
     useEffect(() => {
-        const username = signupReq.username.trim();
+        const username = signupReq.username;
 
         if (!username || username.length < 3) {
             setUsernameStatus({ available: null, checking: false, error: null });
             return;
         }
-
         if (!isValidUsername(username)) {
             setUsernameStatus({
                 available: null,
@@ -157,7 +158,6 @@ function SignUp({ handleUserState }) {
             });
             return;
         }
-
         setUsernameStatus({ available: null, checking: true, error: null });
 
         const timer = setTimeout(async () => {
@@ -169,8 +169,12 @@ function SignUp({ handleUserState }) {
                     `http://${BACKEND}/auth/check_username/${encodeURIComponent(username)}`,
                     { signal: abortRef.current.signal }
                 );
+                const availability = response.data?.availability;
+                if (availability === -1) {
+                    throw new Error("server error")
+                }
                 setUsernameStatus({
-                    available: response.data?.availability,
+                    available: Boolean(availability),
                     checking: false,
                     error: null
                 });
@@ -185,11 +189,11 @@ function SignUp({ handleUserState }) {
             }
         }, 400);
 
-    return () => {
-        clearTimeout(timer);
-        abortRef.current?.abort();
-    };
-}, [signupReq.username]);
+        return () => {
+            clearTimeout(timer);
+            abortRef.current?.abort();
+        };
+    }, [signupReq.username]);
 
     const usernameMessage = usernameStatus.checking
         ? (<p>Checking availability...</p>)
@@ -212,12 +216,13 @@ function SignUp({ handleUserState }) {
         return (
             <div className="auth-page">
                 <form className="auth-form" onSubmit={handleNext}>
-                    {usernameMessage && usernameMessage}
+                    {usernameMessage}
                     <input 
                         type="text" 
                         name="username"
                         className="input" 
                         placeholder="username" 
+                        autoComplete="username"
                         value={signupReq.username}
                         onChange={handleInputChange}
                         minLength="3"
@@ -229,6 +234,7 @@ function SignUp({ handleUserState }) {
                         name="password"
                         className="input" 
                         placeholder="password" 
+                        autoComplete="current-password"
                         value={signupReq.password}
                         onChange={handleInputChange}
                         minLength="8"
@@ -242,7 +248,10 @@ function SignUp({ handleUserState }) {
                         value={signupReq.email}
                         onChange={handleInputChange}
                     />
-                    <button className="btn btn-primary" type="submit" disabled={usernameStatus.available === false || signupReq.username.trim().length < 3}>
+                    <button
+                        className="btn btn-primary"
+                        type="submit"
+                        disabled={usernameStatus.available !== true || signupReq.username.trim().length < 3}>
                         Next
                     </button>
                 </form>
